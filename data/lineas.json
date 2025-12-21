@@ -1,0 +1,22 @@
+[
+  {
+    "numero": 1,
+    "nombre": "Línea 1 - Pinar de Chamartín ↔ Valdecarros",
+    "color": "#38A3DC"
+  },
+  {
+    "numero": 3,
+    "nombre": "Línea 3 - Moncloa ↔ Villaverde Alto",
+    "color": "#FFD100"
+  },
+  {
+    "numero": 6,
+    "nombre": "Línea 6 - Circular",
+    "color": "#9CA4A8"
+  },
+  {
+    "numero": 10,
+    "nombre": "Línea 10 - Hospital Infanta Sofía ↔ Puerta del Sur",
+    "color": "#015096"
+  }
+]

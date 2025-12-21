@@ -1,0 +1,399 @@
+[
+  {
+    "nombre": "Ciudad Universitaria (UCM)",
+    "universidad": "UCM",
+    "direccion": "Av. Séneca, 2, 28040 Madrid",
+    "estaciones_cercanas": [
+      {
+        "estacion_id": "est_l6_014",
+        "nombre_estacion": "Ciudad Universitaria",
+        "rol": "principal",
+        "minutos_andando": 5,
+        "lineas": [6]
+      },
+      {
+        "estacion_id": "est_l3_001",
+        "nombre_estacion": "Moncloa",
+        "rol": "alternativa",
+        "minutos_andando": 15,
+        "lineas": [3, 6]
+      }
+    ],
+    "estudios": [
+      {
+        "nombre": "Grado en Ciencia e Ingeniería de Datos",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 60,
+        "nota_corte": 12.5,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería Informática",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 120,
+        "nota_corte": 11.8,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Matemáticas",
+        "tipo": "GRADO",
+        "rama": "Ciencias",
+        "plazas": 80,
+        "nota_corte": 12.3,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Física",
+        "tipo": "GRADO",
+        "rama": "Ciencias",
+        "plazas": 100,
+        "nota_corte": 11.9,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Máster en Inteligencia Artificial",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 40
+      },
+      {
+        "nombre": "Máster en Big Data y Data Science",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 50
+      },
+      {
+        "nombre": "Máster en Ciberseguridad",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 35
+      }
+    ]
+  },
+  {
+    "nombre": "Campus de Moncloa (UPM)",
+    "universidad": "UPM",
+    "direccion": "Av. Ramiro de Maeztu, 7, 28040 Madrid",
+    "estaciones_cercanas": [
+      {
+        "estacion_id": "est_l3_001",
+        "nombre_estacion": "Moncloa",
+        "rol": "principal",
+        "minutos_andando": 8,
+        "lineas": [3, 6]
+      },
+      {
+        "estacion_id": "est_l6_014",
+        "nombre_estacion": "Ciudad Universitaria",
+        "rol": "alternativa",
+        "minutos_andando": 12,
+        "lineas": [6]
+      }
+    ],
+    "estudios": [
+      {
+        "nombre": "Grado en Ingeniería Aeroespacial",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 90,
+        "nota_corte": 13.1,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería de Telecomunicación",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 110,
+        "nota_corte": 12.7,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería Industrial",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 150,
+        "nota_corte": 12.9,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Máster en Robótica y Automatización",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 18,
+        "creditos": 90,
+        "plazas": 30
+      },
+      {
+        "nombre": "Máster en Ingeniería de Telecomunicación",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 24,
+        "creditos": 120,
+        "plazas": 45
+      }
+    ]
+  },
+  {
+    "nombre": "Campus de Leganés (UC3M)",
+    "universidad": "UC3M",
+    "direccion": "Av. de la Universidad, 30, 28911 Leganés, Madrid",
+    "estaciones_cercanas": [
+      {
+        "estacion_id": "est_l12_001",
+        "nombre_estacion": "Leganés Central",
+        "rol": "principal",
+        "minutos_andando": 20,
+        "lineas": [12]
+      },
+      {
+        "estacion_id": "est_l6_012",
+        "nombre_estacion": "Legazpi",
+        "rol": "alternativa",
+        "minutos_andando": 35,
+        "lineas": [3, 6]
+      }
+    ],
+    "estudios": [
+      {
+        "nombre": "Grado en Ciencia e Ingeniería de Datos",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 70,
+        "nota_corte": 12.8,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería Informática",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 130,
+        "nota_corte": 12.4,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería Biomédica",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 80,
+        "nota_corte": 12.9,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Economía",
+        "tipo": "GRADO",
+        "rama": "Ciencias Sociales y Jurídicas",
+        "plazas": 200,
+        "nota_corte": 11.5,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Máster en Machine Learning",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 50
+      },
+      {
+        "nombre": "Máster en Inteligencia Artificial",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 45
+      },
+      {
+        "nombre": "Máster en Business Analytics",
+        "tipo": "MASTER",
+        "rama": "Ciencias Sociales y Jurídicas",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 40
+      }
+    ]
+  },
+  {
+    "nombre": "Campus de Fuenlabrada (URJC)",
+    "universidad": "URJC",
+    "direccion": "Camino del Molino, s/n, 28943 Fuenlabrada, Madrid",
+    "estaciones_cercanas": [
+      {
+        "estacion_id": "est_l12_015",
+        "nombre_estacion": "Parque Europa",
+        "rol": "principal",
+        "minutos_andando": 25,
+        "lineas": [12]
+      },
+      {
+        "estacion_id": "est_l10_015",
+        "nombre_estacion": "Puerta del Sur",
+        "rol": "alternativa",
+        "minutos_andando": 30,
+        "lineas": [10]
+      }
+    ],
+    "estudios": [
+      {
+        "nombre": "Grado en Ciencia e Ingeniería de Datos",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 65,
+        "nota_corte": 12.2,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería del Software",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 100,
+        "nota_corte": 11.6,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería de Computadores",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 75,
+        "nota_corte": 11.4,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Máster en Cloud Computing",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 35
+      },
+      {
+        "nombre": "Máster en DevOps y Automatización",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 30
+      }
+    ]
+  },
+  {
+    "nombre": "Campus de Vicálvaro (URJC)",
+    "universidad": "URJC",
+    "direccion": "Paseo de los Artilleros, s/n, 28032 Madrid",
+    "estaciones_cercanas": [
+      {
+        "estacion_id": "est_l9_018",
+        "nombre_estacion": "Vicálvaro",
+        "rol": "principal",
+        "minutos_andando": 10,
+        "lineas": [9]
+      }
+    ],
+    "estudios": [
+      {
+        "nombre": "Grado en Administración y Dirección de Empresas",
+        "tipo": "GRADO",
+        "rama": "Ciencias Sociales y Jurídicas",
+        "plazas": 180,
+        "nota_corte": 10.8,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Marketing",
+        "tipo": "GRADO",
+        "rama": "Ciencias Sociales y Jurídicas",
+        "plazas": 120,
+        "nota_corte": 10.5,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Máster en Marketing Digital",
+        "tipo": "MASTER",
+        "rama": "Ciencias Sociales y Jurídicas",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 40
+      }
+    ]
+  },
+  {
+    "nombre": "Campus Sur (UPM)",
+    "universidad": "UPM",
+    "direccion": "Calle de Alan Turing, s/n, 28031 Madrid",
+    "estaciones_cercanas": [
+      {
+        "estacion_id": "est_l6_015",
+        "nombre_estacion": "Pacífico",
+        "rol": "principal",
+        "minutos_andando": 18,
+        "lineas": [1, 6]
+      },
+      {
+        "estacion_id": "est_l1_014",
+        "nombre_estacion": "Menéndez Pelayo",
+        "rol": "alternativa",
+        "minutos_andando": 20,
+        "lineas": [1]
+      }
+    ],
+    "estudios": [
+      {
+        "nombre": "Grado en Ingeniería de Sistemas Audiovisuales",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 60,
+        "nota_corte": 11.8,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Grado en Ingeniería Telemática",
+        "tipo": "GRADO",
+        "rama": "Ingeniería y Arquitectura",
+        "plazas": 90,
+        "nota_corte": 12.1,
+        "duracion_años": 4,
+        "creditos": 240
+      },
+      {
+        "nombre": "Máster en Inteligencia Artificial",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 18,
+        "creditos": 90,
+        "plazas": 40
+      },
+      {
+        "nombre": "Máster en Sistemas Distribuidos y Big Data",
+        "tipo": "MASTER",
+        "rama": "Ingeniería y Arquitectura",
+        "duracion_meses": 12,
+        "creditos": 60,
+        "plazas": 35
+      }
+    ]
+  }
+]

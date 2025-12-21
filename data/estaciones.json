@@ -1,0 +1,562 @@
+[
+  {
+    "id": "est_l1_001",
+    "nombre": "Pinar de Chamartín",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4633, "lng": -3.6792},
+    "indice_por_linea": {"1": 1}
+  },
+  {
+    "id": "est_l1_002",
+    "nombre": "Bambú",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4584, "lng": -3.6758},
+    "indice_por_linea": {"1": 2}
+  },
+  {
+    "id": "est_l1_003",
+    "nombre": "Chamartín",
+    "lineas": [1, 10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": true,
+    "estacion_renfe": {
+      "nombre": "Madrid-Chamartín-Clara Campoamor",
+      "lineas_renfe": ["C1", "C2", "C3", "C4", "C7", "C8", "C10"]
+    },
+    "coordenadas": {"lat": 40.4472, "lng": -3.6803},
+    "indice_por_linea": {"1": 3, "10": 14}
+  },
+  {
+    "id": "est_l1_004",
+    "nombre": "Plaza de Castilla",
+    "lineas": [1, 9, 10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4464, "lng": -3.6889},
+    "indice_por_linea": {"1": 4, "9": 1, "10": 13}
+  },
+  {
+    "id": "est_l1_005",
+    "nombre": "Valdeacederas",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4433, "lng": -3.6942},
+    "indice_por_linea": {"1": 5}
+  },
+  {
+    "id": "est_l1_006",
+    "nombre": "Tetuán",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4394, "lng": -3.6978},
+    "indice_por_linea": {"1": 6}
+  },
+  {
+    "id": "est_l1_007",
+    "nombre": "Estrecho",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4353, "lng": -3.7014},
+    "indice_por_linea": {"1": 7}
+  },
+  {
+    "id": "est_l1_008",
+    "nombre": "Alvarado",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4314, "lng": -3.7025},
+    "indice_por_linea": {"1": 8}
+  },
+  {
+    "id": "est_l1_009",
+    "nombre": "Cuatro Caminos",
+    "lineas": [1, 2, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4264, "lng": -3.7058},
+    "indice_por_linea": {"1": 9, "2": 11, "6": 6}
+  },
+  {
+    "id": "est_l1_010",
+    "nombre": "Ríos Rosas",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4286, "lng": -3.6956},
+    "indice_por_linea": {"1": 10}
+  },
+  {
+    "id": "est_l1_011",
+    "nombre": "Iglesia",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4272, "lng": -3.6906},
+    "indice_por_linea": {"1": 11}
+  },
+  {
+    "id": "est_l1_012",
+    "nombre": "Sol",
+    "lineas": [1, 2, 3],
+    "zona_tarifaria": "A",
+    "tiene_renfe": true,
+    "estacion_renfe": {
+      "nombre": "Sol",
+      "lineas_renfe": ["C3", "C4"]
+    },
+    "coordenadas": {"lat": 40.4169, "lng": -3.7033},
+    "indice_por_linea": {"1": 12, "2": 8, "3": 10}
+  },
+  {
+    "id": "est_l1_013",
+    "nombre": "Atocha",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": true,
+    "estacion_renfe": {
+      "nombre": "Madrid-Puerta de Atocha",
+      "lineas_renfe": ["C1", "C2", "C5", "C7", "C10"]
+    },
+    "coordenadas": {"lat": 40.4067, "lng": -3.6914},
+    "indice_por_linea": {"1": 13}
+  },
+  {
+    "id": "est_l1_014",
+    "nombre": "Menéndez Pelayo",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4067, "lng": -3.6739},
+    "indice_por_linea": {"1": 14}
+  },
+  {
+    "id": "est_l1_015",
+    "nombre": "Pacífico",
+    "lineas": [1, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4031, "lng": -3.6697},
+    "indice_por_linea": {"1": 15, "6": 15}
+  },
+  {
+    "id": "est_l3_001",
+    "nombre": "Moncloa",
+    "lineas": [3, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4336, "lng": -3.7172},
+    "indice_por_linea": {"3": 1, "6": 8}
+  },
+  {
+    "id": "est_l3_002",
+    "nombre": "Argüelles",
+    "lineas": [3, 4, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4286, "lng": -3.7178},
+    "indice_por_linea": {"3": 2, "4": 6, "6": 9}
+  },
+  {
+    "id": "est_l3_003",
+    "nombre": "Ventura Rodríguez",
+    "lineas": [3],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4242, "lng": -3.7172},
+    "indice_por_linea": {"3": 3}
+  },
+  {
+    "id": "est_l3_004",
+    "nombre": "Callao",
+    "lineas": [3, 5],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4200, "lng": -3.7061},
+    "indice_por_linea": {"3": 4, "5": 8}
+  },
+  {
+    "id": "est_l3_005",
+    "nombre": "Tribunal",
+    "lineas": [1, 10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4258, "lng": -3.7006},
+    "indice_por_linea": {"1": 16, "10": 11}
+  },
+  {
+    "id": "est_l3_006",
+    "nombre": "Alonso Martínez",
+    "lineas": [4, 5, 10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4278, "lng": -3.6956},
+    "indice_por_linea": {"4": 8, "5": 6, "10": 12}
+  },
+  {
+    "id": "est_l3_007",
+    "nombre": "Tribunal",
+    "lineas": [1, 10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4258, "lng": -3.7006},
+    "indice_por_linea": {"1": 17, "10": 10}
+  },
+  {
+    "id": "est_l3_008",
+    "nombre": "Lavapies",
+    "lineas": [3],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4106, "lng": -3.7011},
+    "indice_por_linea": {"3": 8}
+  },
+  {
+    "id": "est_l3_009",
+    "nombre": "Embajadores",
+    "lineas": [3, 5],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4058, "lng": -3.7039},
+    "indice_por_linea": {"3": 9, "5": 11}
+  },
+  {
+    "id": "est_l3_010",
+    "nombre": "Palos de la Frontera",
+    "lineas": [3],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4011, "lng": -3.7069},
+    "indice_por_linea": {"3": 11}
+  },
+  {
+    "id": "est_l3_011",
+    "nombre": "Delicias",
+    "lineas": [3],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3978, "lng": -3.6969},
+    "indice_por_linea": {"3": 12}
+  },
+  {
+    "id": "est_l3_012",
+    "nombre": "Legazpi",
+    "lineas": [3, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3919, "lng": -3.6942},
+    "indice_por_linea": {"3": 13, "6": 17}
+  },
+  {
+    "id": "est_l3_013",
+    "nombre": "Villaverde Alto",
+    "lineas": [3],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": true,
+    "estacion_renfe": {
+      "nombre": "Villaverde Alto",
+      "lineas_renfe": ["C5"]
+    },
+    "coordenadas": {"lat": 40.3467, "lng": -3.7067},
+    "indice_por_linea": {"3": 14}
+  },
+  {
+    "id": "est_l3_014",
+    "nombre": "San Cristóbal",
+    "lineas": [3],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3492, "lng": -3.7008},
+    "indice_por_linea": {"3": 15}
+  },
+  {
+    "id": "est_l3_015",
+    "nombre": "Hospital 12 de Octubre",
+    "lineas": [3],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3739, "lng": -3.7042},
+    "indice_por_linea": {"3": 16}
+  },
+  {
+    "id": "est_l6_001",
+    "nombre": "Príncipe Pío",
+    "lineas": [6, 10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": true,
+    "estacion_renfe": {
+      "nombre": "Madrid-Príncipe Pío",
+      "lineas_renfe": ["C1", "C7", "C10"]
+    },
+    "coordenadas": {"lat": 40.4194, "lng": -3.7175},
+    "indice_por_linea": {"6": 1, "10": 7}
+  },
+  {
+    "id": "est_l6_002",
+    "nombre": "Puerta del Ángel",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4114, "lng": -3.7267},
+    "indice_por_linea": {"6": 2}
+  },
+  {
+    "id": "est_l6_003",
+    "nombre": "Alto de Extremadura",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4056, "lng": -3.7281},
+    "indice_por_linea": {"6": 3}
+  },
+  {
+    "id": "est_l6_004",
+    "nombre": "Lucero",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4003, "lng": -3.7261},
+    "indice_por_linea": {"6": 4}
+  },
+  {
+    "id": "est_l6_005",
+    "nombre": "Campamento",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3928, "lng": -3.7250},
+    "indice_por_linea": {"6": 5}
+  },
+  {
+    "id": "est_l6_006",
+    "nombre": "Oporto",
+    "lineas": [5, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3869, "lng": -3.7103},
+    "indice_por_linea": {"5": 12, "6": 16}
+  },
+  {
+    "id": "est_l6_007",
+    "nombre": "Opañel",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3908, "lng": -3.7186},
+    "indice_por_linea": {"6": 7}
+  },
+  {
+    "id": "est_l6_008",
+    "nombre": "Méndez Álvaro",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3989, "lng": -3.6764},
+    "indice_por_linea": {"6": 18}
+  },
+  {
+    "id": "est_l6_009",
+    "nombre": "Conde de Casal",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4056, "lng": -3.6714},
+    "indice_por_linea": {"6": 14}
+  },
+  {
+    "id": "est_l6_010",
+    "nombre": "Sainz de Baranda",
+    "lineas": [6, 9],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4117, "lng": -3.6653},
+    "indice_por_linea": {"6": 13, "9": 8}
+  },
+  {
+    "id": "est_l6_011",
+    "nombre": "O'Donnell",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4194, "lng": -3.6714},
+    "indice_por_linea": {"6": 12}
+  },
+  {
+    "id": "est_l6_012",
+    "nombre": "Manuel Becerra",
+    "lineas": [2, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4264, "lng": -3.6714},
+    "indice_por_linea": {"2": 13, "6": 11}
+  },
+  {
+    "id": "est_l6_013",
+    "nombre": "Diego de León",
+    "lineas": [4, 5, 6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4383, "lng": -3.6717},
+    "indice_por_linea": {"4": 10, "5": 4, "6": 10}
+  },
+  {
+    "id": "est_l6_014",
+    "nombre": "Ciudad Universitaria",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4469, "lng": -3.7156},
+    "indice_por_linea": {"6": 7}
+  },
+  {
+    "id": "est_l6_015",
+    "nombre": "Metropolitano",
+    "lineas": [6],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4514, "lng": -3.6883},
+    "indice_por_linea": {"6": 5}
+  },
+  {
+    "id": "est_l10_001",
+    "nombre": "Hospital Infanta Sofía",
+    "lineas": [10],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.5403, "lng": -3.6356},
+    "indice_por_linea": {"10": 1}
+  },
+  {
+    "id": "est_l10_002",
+    "nombre": "Reyes Católicos",
+    "lineas": [10],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.5256, "lng": -3.6472},
+    "indice_por_linea": {"10": 2}
+  },
+  {
+    "id": "est_l10_003",
+    "nombre": "Marqués de la Valdavia",
+    "lineas": [10],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.5156, "lng": -3.6539},
+    "indice_por_linea": {"10": 3}
+  },
+  {
+    "id": "est_l10_004",
+    "nombre": "La Moraleja",
+    "lineas": [10],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.5069, "lng": -3.6614},
+    "indice_por_linea": {"10": 4}
+  },
+  {
+    "id": "est_l10_005",
+    "nombre": "Ronda de la Comunicación",
+    "lineas": [10],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4986, "lng": -3.6683},
+    "indice_por_linea": {"10": 5}
+  },
+  {
+    "id": "est_l10_006",
+    "nombre": "Tres Olivos",
+    "lineas": [10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4811, "lng": -3.6861},
+    "indice_por_linea": {"10": 6}
+  },
+  {
+    "id": "est_l10_007",
+    "nombre": "Gregorio Marañón",
+    "lineas": [7, 10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4406, "lng": -3.6872},
+    "indice_por_linea": {"7": 5, "10": 15}
+  },
+  {
+    "id": "est_l10_008",
+    "nombre": "Núñez de Balboa",
+    "lineas": [5, 9],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4261, "lng": -3.6822},
+    "indice_por_linea": {"5": 5, "9": 6}
+  },
+  {
+    "id": "est_l10_009",
+    "nombre": "Lago",
+    "lineas": [10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4336, "lng": -3.7264},
+    "indice_por_linea": {"10": 8}
+  },
+  {
+    "id": "est_l10_010",
+    "nombre": "Batán",
+    "lineas": [10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4175, "lng": -3.7464},
+    "indice_por_linea": {"10": 6}
+  },
+  {
+    "id": "est_l10_011",
+    "nombre": "Casa de Campo",
+    "lineas": [10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.4142, "lng": -3.7517},
+    "indice_por_linea": {"10": 5}
+  },
+  {
+    "id": "est_l10_012",
+    "nombre": "Colonia Jardín",
+    "lineas": [10],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3836, "lng": -3.7428},
+    "indice_por_linea": {"10": 4}
+  },
+  {
+    "id": "est_l10_013",
+    "nombre": "Cuatro Vientos",
+    "lineas": [10],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3697, "lng": -3.7861},
+    "indice_por_linea": {"10": 3}
+  },
+  {
+    "id": "est_l10_014",
+    "nombre": "Joaquín Vilumbrales",
+    "lineas": [10],
+    "zona_tarifaria": "B1",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3608, "lng": -3.7792},
+    "indice_por_linea": {"10": 2}
+  },
+  {
+    "id": "est_l10_015",
+    "nombre": "Puerta del Sur",
+    "lineas": [10],
+    "zona_tarifaria": "B2",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3433, "lng": -3.7389},
+    "indice_por_linea": {"10": 1}
+  }
+]

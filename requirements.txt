@@ -1,0 +1,16 @@
+# Dependencias para el proyecto Metro de Madrid y Universidades
+# Práctica de Bases de Datos No Relacionales - URJC 2025/2026
+
+# MongoDB
+pymongo==4.6.1
+
+# Neo4j
+neo4j==5.16.0
+
+# LLM Providers (opcional, instalar según necesidad)
+openai>=1.0.0  # Para OpenAI GPT-4
+anthropic>=0.18.0  # Para Claude
+requests>=2.31.0  # Para modelos locales (Ollama)
+
+# Utilidades
+python-dotenv==1.0.0
