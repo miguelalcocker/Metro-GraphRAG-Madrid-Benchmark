@@ -553,10 +553,55 @@
   {
     "id": "est_l10_015",
     "nombre": "Puerta del Sur",
-    "lineas": [10],
+    "lineas": [10, 12],
     "zona_tarifaria": "B2",
     "tiene_renfe": false,
     "coordenadas": {"lat": 40.3433, "lng": -3.7389},
-    "indice_por_linea": {"10": 1}
+    "indice_por_linea": {"10": 1, "12": 27}
+  },
+  {
+    "id": "est_l12_015",
+    "nombre": "Hosptial de Fuenlabrada",
+    "lineas": [12],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.2857, "lng": -3.8164},
+    "indice_por_linea": {"12": 17}
+  },
+  {
+    "id": "est_l1_015",
+    "nombre": "Sierra de Guadalupe",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": true,
+    "coordenadas": {"lat": 40.3821, "lng": -3.6247},
+    "indice_por_linea": {"1": 5}
+  },
+  {
+    "id": "est_l1_016",
+    "nombre": "Miguel Hernández",
+    "lineas": [1],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3875, "lng": -3.6205},
+    "indice_por_linea": {"1": 6}
+  },
+  {
+    "id": "est_l12_002",
+    "nombre": "Casa del Reloj",
+    "lineas": [12],
+    "zona_tarifaria": "A",
+    "tiene_renfe": false,
+    "coordenadas": {"lat": 40.3265, "lng": -3.7594},
+    "indice_por_linea": {"12": 3}
+  },
+  {
+  "id": "est_l12_014",
+  "nombre": "Parque Europa",
+  "lineas": [12],
+  "zona_tarifaria": "B2",
+  "tiene_renfe": false,
+  "coordenadas": {"lat": 40.2854, "lng": -3.8063},
+  "indice_por_linea": {"12": 16}
   }
 ]
