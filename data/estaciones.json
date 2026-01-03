@@ -183,7 +183,7 @@
     "indice_por_linea": {"3": 4, "5": 8}
   },
   {
-    "id": "est_l3_005",
+    "id": "est_l1_016",
     "nombre": "Tribunal",
     "lineas": [1, 10],
     "zona_tarifaria": "A",
@@ -192,7 +192,7 @@
     "indice_por_linea": {"1": 16, "10": 11}
   },
   {
-    "id": "est_l3_006",
+    "id": "est_l4_008",
     "nombre": "Alonso Martínez",
     "lineas": [4, 5, 10],
     "zona_tarifaria": "A",
@@ -201,7 +201,7 @@
     "indice_por_linea": {"4": 8, "5": 6, "10": 12}
   },
   {
-    "id": "est_l3_007",
+    "id": "est_l1_017",
     "nombre": "Tribunal",
     "lineas": [1, 10],
     "zona_tarifaria": "A",
@@ -228,7 +228,7 @@
     "indice_por_linea": {"3": 9, "5": 11}
   },
   {
-    "id": "est_l3_010",
+    "id": "est_l3_011",
     "nombre": "Palos de la Frontera",
     "lineas": [3],
     "zona_tarifaria": "A",
@@ -237,7 +237,7 @@
     "indice_por_linea": {"3": 11}
   },
   {
-    "id": "est_l3_011",
+    "id": "est_l3_012",
     "nombre": "Delicias",
     "lineas": [3],
     "zona_tarifaria": "A",
@@ -246,7 +246,7 @@
     "indice_por_linea": {"3": 12}
   },
   {
-    "id": "est_l3_012",
+    "id": "est_l3_013",
     "nombre": "Legazpi",
     "lineas": [3, 6],
     "zona_tarifaria": "A",
@@ -255,7 +255,7 @@
     "indice_por_linea": {"3": 13, "6": 17}
   },
   {
-    "id": "est_l3_013",
+    "id": "est_l3_014",
     "nombre": "Villaverde Alto",
     "lineas": [3],
     "zona_tarifaria": "B1",
@@ -268,7 +268,7 @@
     "indice_por_linea": {"3": 14}
   },
   {
-    "id": "est_l3_014",
+    "id": "est_l3_015",
     "nombre": "San Cristóbal",
     "lineas": [3],
     "zona_tarifaria": "B1",
@@ -574,6 +574,10 @@
     "lineas": [1],
     "zona_tarifaria": "A",
     "tiene_renfe": true,
+    "estacion_renfe": {
+      "nombre": "Vallecas",
+      "lineas_renfe": ["C2", "C7", "C8"]
+    },
     "coordenadas": {"lat": 40.3821, "lng": -3.6247},
     "indice_por_linea": {"1": 5}
   },
