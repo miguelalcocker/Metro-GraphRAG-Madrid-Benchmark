@@ -167,7 +167,7 @@ class MongoDBLoader:
         print("  ✓ Índices en 'campus': universidad, nombre, estudios.nombre, estudios.tipo")
 
         # Índices en líneas
-        self.db.lineas.create_index([("numero", ASCENDING)])
+        self.db.lineas.create_index([("numero", 1)], unique=True)
         print("  ✓ Índices en 'lineas': numero")
 
     def show_statistics(self):
