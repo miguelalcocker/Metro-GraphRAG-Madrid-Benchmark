@@ -1,0 +1,2142 @@
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================================
+% PAQUETES
+% ============================================================================
+% NOTA: inputenc no es necesario con LuaLaTeX (maneja UTF-8 nativamente)
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+% ============================================================================
+% CONFIGURACIÓN DE LISTINGS (para código)
+% ============================================================================
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red},
+    showstringspaces=false,
+    tabsize=2,
+    captionpos=b,
+    backgroundcolor=\color{gray!10}
+}
+
+% Definir lenguaje Python
+\lstdefinestyle{python}{
+    language=Python,
+    morekeywords={self,True,False,None}
+}
+
+% Definir lenguaje Cypher
+\lstdefinestyle{cypher}{
+    language=SQL,
+    morekeywords={MATCH,WHERE,RETURN,CREATE,MERGE,WITH,UNWIND,AS,ORDER,BY,LIMIT,DESC,ASC,shortestPath}
+}
+
+% ============================================================================
+% CONFIGURACIÓN DE HYPERREF
+% ============================================================================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=green,
+    pdftitle={Práctica MongoDB y Neo4j - Bases de Datos No Relacionales},
+    pdfauthor={Cristian Gómez Macías y colaboradores},
+    plainpages=false,
+}
+
+% ============================================================================
+% ENCABEZADOS Y PIES DE PÁGINA
+% ============================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Bases de Datos No Relacionales}
+\fancyhead[R]{Práctica MongoDB y Neo4j}
+\fancyfoot[C]{\thepage}
+% Ajustar altura del encabezado para evitar warnings
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+
+% ============================================================================
+% INFORMACIÓN DEL DOCUMENTO
+% ============================================================================
+\title{\textbf{Práctica de MongoDB y Neo4j} \\
+       \large Bases de Datos No Relacionales \\
+       \large Temas 5 y 6}
+\author{
+    Cristian Gómez Macías \\
+    \textit{Nombre Compañero 2} \\
+    \textit{Nombre Compañero 3} \\
+    \\
+    Grado en Ciencia e Ingeniería de Datos \\
+    Universidad Rey Juan Carlos \\
+    Curso 2025/2026
+}
+\date{Enero 2026}
+
+% ============================================================================
+% INICIO DEL DOCUMENTO
+% ============================================================================
+\begin{document}
+
+% Suprimir numeración en la portada para evitar warnings de hyperref
+\pagenumbering{gobble}
+
+% ============================================================================
+% PORTADA
+% ============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\LARGE\textbf{Universidad Rey Juan Carlos}}\\[0.5cm]
+    {\large Grado en Ciencia e Ingeniería de Datos}\\[0.3cm]
+    {\large Bases de Datos No Relacionales}\\[0.3cm]
+    {\large Curso 2025/2026}\\[2cm]
+
+    \rule{\linewidth}{0.5mm}\\[0.4cm]
+    {\huge\bfseries Práctica MongoDB y Neo4j}\\[0.2cm]
+    {\Large\bfseries Sistema de Información del Metro de Madrid}\\[0.2cm]
+    {\Large\bfseries y Campus Universitarios}\\[0.2cm]
+    \rule{\linewidth}{0.5mm}\\[2cm]
+
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushleft}
+            \textbf{Autores:}\\
+            Miguel Alcocer Pérez\\
+            [Álvaro Morán Lorente]
+        \end{flushleft}
+    \end{minipage}
+    ~
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushright}
+            \textbf{Profesor:}\\
+            Cristian Gómez Macías
+        \end{flushright}
+    \end{minipage}\\[3cm]
+
+    \vfill
+
+    {\large Enero 2026}
+
+\end{titlepage}
+
+% Reiniciar numeración para el contenido
+\pagenumbering{arabic}
+
+% ============================================================================
+% ÍNDICE
+% ============================================================================
+\tableofcontents
+\newpage
+
+% ============================================================================
+% 1. INTRODUCCIÓN Y CONTEXTO
+% ============================================================================
+\section{Introducción y Contexto}
+
+\subsection{Contexto del Proyecto}
+
+La empresa \textbf{MetroCampus Data Services (MDS)} desarrolla soluciones de análisis de datos para sistemas de transporte urbano y planificación académica. En el curso 2025/2026 se plantea un proyecto centrado en la ciudad de Madrid cuyo objetivo es estudiar cómo se relacionan:
+
+\begin{itemize}
+    \item La red de Metro de Madrid (líneas y estaciones)
+    \item Las correspondencias con Renfe existentes en determinadas estaciones de Metro
+    \item Los campus universitarios públicos (UCM, UPM, UC3M, URJC) y los estudios de Grado y Máster que se imparten en ellos
+\end{itemize}
+
+El sistema debe ser capaz de responder preguntas complejas como:
+
+\begin{itemize}
+    \item ¿Qué líneas y estaciones de Metro dan mejor servicio a los distintos campus?
+    \item ¿Qué estaciones pueden considerarse ``hubs universitarios''?
+    \item ¿Qué trayectos en Metro resultan más adecuados para cursar un determinado Grado o Máster, según la estación de origen de la persona interesada?
+\end{itemize}
+
+Para cubrir tanto la parte de modelo de datos operativo como la parte de análisis de rutas y relaciones, se ha decidido combinar dos tecnologías complementarias:
+
+\begin{itemize}
+    \item \textbf{MongoDB} (base de datos documental): Para almacenar y consultar información estructurada sobre líneas, estaciones, campus y estudios
+    \item \textbf{Neo4j} (base de datos de grafos): Para modelar la topología de la red de metro y calcular rutas óptimas
+\end{itemize}
+
+\subsection{Objetivo de la Práctica}
+
+Esta práctica tiene como objetivos:
+
+\begin{enumerate}
+    \item Diseñar e implementar un modelo documental en MongoDB para representar el dominio
+    \item Utilizar operaciones CRUD y agregaciones para consultas típicas del dominio
+    \item Diseñar e implementar un modelo de grafo en Neo4j a partir del mismo dominio
+    \item Ejecutar consultas en Cypher sobre estructuras de grafos
+    \item Implementar consultas de rutas y recomendación de campus según trayectos en Metro
+    \item Comparar de manera razonada el papel de MongoDB y Neo4j en un sistema real basado en datos no relacionales
+\end{enumerate}
+
+% ============================================================================
+% 2. PARTE A - MONGODB
+% ============================================================================
+\section{Parte A - MongoDB}
+
+\subsection{Modelo de Datos Documental}
+
+\subsubsection{Decisiones de Diseño}
+
+El modelo documental implementado en MongoDB consta de \textbf{tres colecciones principales}: \texttt{lineas}, \texttt{estaciones} y \texttt{campus}. A continuación se justifican las decisiones clave de diseño:
+
+\paragraph{1. Embebido vs. Referencias}
+
+\begin{itemize}
+    \item \textbf{Líneas $\leftrightarrow$ Estaciones (Referencias):} Se optó por almacenar un array de \texttt{ObjectId} en la colección \texttt{lineas} que referencia a los documentos de \texttt{estaciones}. Esta decisión se basa en que:
+    \begin{itemize}
+        \item Las estaciones pueden pertenecer a múltiples líneas (intercambiadores)
+        \item La información de una estación es extensa (coordenadas, Renfe, zona tarifaria) y debe evitarse duplicación
+        \item Se facilita la actualización: cambios en una estación se reflejan automáticamente en todas las líneas
+    \end{itemize}
+
+    \item \textbf{Campus $\leftrightarrow$ Estudios (Embebido):} Los estudios se almacenan como array embebido dentro del documento de \texttt{campus}. Justificación:
+    \begin{itemize}
+        \item Los estudios tienen sentido únicamente en el contexto de un campus específico
+        \item Se optimizan lecturas frecuentes: consultar un campus devuelve toda su oferta académica en una sola operación
+        \item El tamaño del array es manejable (5-10 estudios por campus)
+        \item Los estudios no se consultan de forma independiente al campus
+    \end{itemize}
+
+    \item \textbf{Campus $\leftrightarrow$ Estaciones Cercanas (Referencia con denormalización parcial):} Se almacenan referencias (\texttt{ObjectId}) a estaciones en el array \texttt{estaciones\_cercanas}, pero se añaden campos desnormalizados como \texttt{nombre\_estacion} y \texttt{minutos\_andando} para optimizar consultas que no requieren datos completos de la estación.
+\end{itemize}
+
+% INSERTAR FIGURA: Diagrama del modelo MongoDB
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_01\_database\_overview.png]}}
+    \caption{Vista general de la base de datos \texttt{metro\_campus\_db} en MongoDB Compass mostrando las tres colecciones principales.}
+    \label{fig:mongodb_overview}
+\end{figure}
+
+\subsubsection{Colección: lineas}
+
+Estructura del documento:
+
+\begin{lstlisting}[style=python, caption={Ejemplo de documento en la colección \texttt{lineas}}]
+{
+  "_id": ObjectId("..."),
+  "numero": 6,
+  "nombre": "Línea 6 - Circular",
+  "color": "#9CA4A8",
+  "estaciones_ids": [
+    ObjectId("..."),  // Príncipe Pío
+    ObjectId("..."),  // Puerta del Ángel
+    ObjectId("..."),  // Alto de Extremadura
+    // ... (18 estaciones en total)
+  ]
+}
+\end{lstlisting}
+
+\textbf{Justificación del campo \texttt{estaciones\_ids}:}
+Este array mantiene el \textit{orden físico} de las estaciones en la línea, lo que permite:
+\begin{itemize}
+    \item Listar estaciones en orden de recorrido con una sola consulta
+    \item Calcular la distancia entre estaciones usando el índice del array
+    \item Mantener la integridad referencial hacia la colección \texttt{estaciones}
+\end{itemize}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_02\_coleccion\_lineas.png]}}
+    \caption{Estructura de un documento en la colección \texttt{lineas} (Línea 6 - Circular).}
+    \label{fig:mongodb_lineas}
+\end{figure}
+
+\subsubsection{Colección: estaciones}
+
+Estructura del documento:
+
+\begin{lstlisting}[style=python, caption={Ejemplo de estación con correspondencia Renfe}]
+{
+  "_id": ObjectId("..."),
+  "nombre": "Chamartín",
+  "lineas": [1, 10],
+  "zona_tarifaria": "A",
+  "tiene_renfe": true,
+  "estacion_renfe": {
+    "nombre": "Madrid-Chamartín-Clara Campoamor",
+    "lineas_renfe": ["C1", "C2", "C3", "C4", "C7", "C8", "C10"]
+  },
+  "coordenadas": {
+    "lat": 40.4472,
+    "lng": -3.6803
+  },
+  "indice_por_linea": {
+    "1": 3,
+    "10": 14
+  }
+}
+\end{lstlisting}
+
+\textbf{Campos clave:}
+\begin{itemize}
+    \item \texttt{lineas}: Array de números de línea que pasan por la estación (facilita consultas de intercambiadores)
+    \item \texttt{tiene\_renfe}: Booleano indexado para filtrado rápido
+    \item \texttt{estacion\_renfe}: Objeto embebido con detalles de Renfe (solo si \texttt{tiene\_renfe} es \texttt{true})
+    \item \texttt{coordenadas}: Preparado para índices geoespaciales 2dsphere (futuras extensiones)
+    \item \texttt{indice\_por\_linea}: Diccionario que mapea número de línea $\rightarrow$ posición en esa línea. Esencial para cálculos de distancia en MongoDB.
+\end{itemize}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_03\_coleccion\_estaciones.png]}}
+    \caption{Estructura de un documento en la colección \texttt{estaciones} con correspondencia Renfe.}
+    \label{fig:mongodb_estaciones}
+\end{figure}
+
+\subsubsection{Colección: campus}
+
+Estructura del documento:
+
+\begin{lstlisting}[style=python, caption={Ejemplo de documento en la colección \texttt{campus}}]
+{
+  "_id": ObjectId("..."),
+  "nombre": "Ciudad Universitaria (UCM)",
+  "universidad": "UCM",
+  "direccion": "Av. Complutense, s/n, 28040 Madrid",
+  "estaciones_cercanas": [
+    {
+      "estacion_id": ObjectId("..."),
+      "nombre_estacion": "Ciudad Universitaria",
+      "rol": "principal",
+      "minutos_andando": 5,
+      "lineas": [6]
+    },
+    {
+      "estacion_id": ObjectId("..."),
+      "nombre_estacion": "Moncloa",
+      "rol": "alternativa",
+      "minutos_andando": 13,
+      "lineas": [3, 6]
+    }
+  ],
+  "estudios": [
+    {
+      "nombre": "Grado en Ciencia e Ingeniería de Datos",
+      "tipo": "GRADO",
+      "rama": "Ingeniería y Arquitectura",
+      "plazas": 60,
+      "nota_corte": 12.5,
+      "duracion_años": 4,
+      "creditos": 240
+    },
+    {
+      "nombre": "Máster en Inteligencia Artificial",
+      "tipo": "MASTER",
+      "rama": "Ingeniería y Arquitectura",
+      "duracion_meses": 12,
+      "creditos": 60,
+      "plazas": 40
+    }
+    // ... más estudios
+  ]
+}
+\end{lstlisting}
+
+\textbf{Decisión clave - Estudios embebidos:}
+Los estudios se modelan como array embebido porque:
+\begin{enumerate}
+    \item \textbf{Atomicidad de consultas:} Al buscar ``campus que ofrecen Grado X'', se obtiene tanto el campus como los detalles del estudio en una sola operación.
+    \item \textbf{Patrón de acceso:} En el dominio real, los estudios rara vez se consultan sin contexto del campus. Los usuarios preguntan ``¿dónde puedo estudiar IA?'' (campus + estudio), no ``dame todos los másteres del sistema'' (solo estudios).
+    \item \textbf{Tamaño controlado:} Cada campus tiene entre 5-10 estudios, muy por debajo del límite de documento de MongoDB (16MB).
+\end{enumerate}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_04\_coleccion\_campus.png]}}
+    \caption{Estructura de la colección \texttt{campus} con estudios embebidos y referencias a estaciones.}
+    \label{fig:mongodb_campus}
+\end{figure}
+
+\subsection{Datos y Carga}
+
+\subsubsection{Volumen de Datos}
+
+El dataset implementado contiene:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Entidad} & \textbf{Cantidad} & \textbf{Observaciones} \\ \midrule
+Líneas de Metro & 4 & L1, L3, L6, L10 \\
+Estaciones & 60 & 8 con correspondencia Renfe \\
+Campus & 6 & UCM, UPM (2), UC3M, URJC (2) \\
+Estudios (total) & 37 & 23 Grados + 14 Másteres \\ \bottomrule
+\end{tabular}
+\caption{Volumen de datos cargados en MongoDB.}
+\label{tab:volumen_datos}
+\end{table}
+
+\textbf{Características del dataset:}
+\begin{itemize}
+    \item \textbf{Estaciones con múltiples líneas:} 8 intercambiadores (ej: Chamartín en L1 y L10)
+    \item \textbf{Estaciones con Renfe:} Chamartín, Sol, Atocha, Príncipe Pío, Villaverde Alto
+    \item \textbf{Distribución de estudios:} UCM (7 estudios), UPM (10), UC3M (7), URJC (8)
+    \item \textbf{Zonas tarifarias:} Mayoría en Zona A, algunas en B1 y B2
+\end{itemize}
+
+\subsubsection{Proceso de Carga}
+
+El script \texttt{load\_data.py} implementa una coreografía en 4 pasos para garantizar integridad referencial:
+
+\begin{enumerate}
+    \item \textbf{Limpieza e inserción de líneas:} Se eliminan colecciones existentes y se insertan líneas. Se genera un mapa \texttt{linea\_id\_map} que asocia número de línea $\rightarrow$ \texttt{ObjectId}.
+
+    \item \textbf{Inserción de estaciones:} Se insertan estaciones y se genera \texttt{estacion\_id\_map} que asocia \texttt{id\_slug} $\rightarrow$ \texttt{ObjectId}.
+
+    \item \textbf{Vinculación línea-estación:} Se agrupan estaciones por línea, se ordenan por \texttt{indice\_por\_linea} y se actualiza el campo \texttt{estaciones\_ids} en cada línea con los \texttt{ObjectId} correctos.
+
+    \item \textbf{Carga de campus:} Se procesan estaciones cercanas reemplazando \texttt{estacion\_id} (slug) por \texttt{ObjectId} real. Los estudios ya vienen embebidos en el JSON.
+\end{enumerate}
+
+\textbf{Salida de consola al ejecutar \texttt{load\_data.py}:}
+
+\begin{lstlisting}[caption={Resultado de la carga de datos en MongoDB}]
+✓ Conectado a MongoDB: metro_campus_db
+✓ Archivo cargado: lineas.json (4 registros)
+✓ Archivo cargado: estaciones.json (60 registros)
+✓ Archivo cargado: campus.json (6 registros)
+
+📊 Cargando líneas de metro...
+  • Línea 1: Línea 1 - Pinar de Chamartín ↔ Valdecarros
+  • Línea 3: Línea 3 - Moncloa ↔ Villaverde Alto
+  • Línea 6: Línea 6 - Circular
+  • Línea 10: Línea 10 - Hospital Infanta Sofía ↔ Puerta del Sur
+✓ 4 líneas insertadas
+
+🚇 Cargando estaciones de metro...
+  • Pinar de Chamartín (L1)
+  • Bambú (L1)
+  • Chamartín (L1, L10) [RENFE]
+  • ... (57 más)
+✓ 60 estaciones insertadas
+
+🔗 Actualizando referencias línea-estación...
+  • Línea 1: 18 estaciones vinculadas
+  • Línea 3: 16 estaciones vinculadas
+  • Línea 6: 18 estaciones vinculadas
+  • Línea 10: 15 estaciones vinculadas
+
+🎓 Cargando campus universitarios...
+  • Ciudad Universitaria (UCM)
+    - 4 Grados, 3 Másteres
+    - Estaciones cercanas: 2
+  • ... (5 más)
+✓ 6 campus insertados
+
+📈 Estadísticas de la base de datos:
+  • Líneas: 4
+  • Estaciones: 60
+  • Campus: 6
+  • Estaciones con Renfe: 5
+  • GRADOs: 23
+  • MASTERs: 14
+
+✅ CARGA COMPLETADA EXITOSAMENTE
+\end{lstlisting}
+
+\subsection{Operaciones CRUD}
+
+Se han implementado operaciones CRUD completas en el script \texttt{operaciones\_crud.py}. A continuación se documentan las operaciones más significativas:
+
+\subsubsection{CREATE - Creación}
+
+\paragraph{Insertar nueva estación con Renfe:}
+
+\begin{lstlisting}[style=python, caption={Operación CREATE - Registrar estación con correspondencia Renfe}]
+def registrar_estacion(self, nombre, lineas, zona_tarifaria,
+                      indice_por_linea, tiene_renfe=False,
+                      estacion_renfe=None, coordenadas=None):
+    estaciones_collection = self.db.estaciones
+
+    # Verificar duplicados
+    if estaciones_collection.find_one({"nombre": nombre}):
+        print(f"⚠️ La estación '{nombre}' ya existe")
+        return None
+
+    # Crear documento
+    estacion_doc = {
+        "nombre": nombre,
+        "lineas": lineas,
+        "zona_tarifaria": zona_tarifaria,
+        "indice_por_linea": indice_por_linea,
+        "tiene_renfe": tiene_renfe,
+        "fecha_registro": datetime.now()
+    }
+
+    if tiene_renfe and estacion_renfe:
+        estacion_doc["estacion_renfe"] = estacion_renfe
+
+    # Insertar
+    result = estaciones_collection.insert_one(estacion_doc)
+
+    # Actualizar líneas correspondientes
+    self._actualizar_lineas_con_estacion(lineas, result.inserted_id,
+                                         indice_por_linea)
+
+    return result.inserted_id
+\end{lstlisting}
+
+\paragraph{Añadir nuevo máster a un campus:}
+
+\begin{lstlisting}[style=python, caption={Operación CREATE - Añadir estudio embebido a campus existente}]
+def añadir_master_a_campus(self, nombre_campus, universidad, master):
+    campus_collection = self.db.campus
+
+    # Validar tipo
+    if master.get("tipo") != "MASTER":
+        print("⚠️ El tipo debe ser 'MASTER'")
+        return False
+
+    # Buscar campus
+    campus = campus_collection.find_one({
+        "nombre": nombre_campus,
+        "universidad": {"$regex": universidad, "$options": "i"}
+    })
+
+    # Añadir máster al array embebido
+    result = campus_collection.update_one(
+        {"_id": campus["_id"]},
+        {
+            "$push": {"estudios": master},
+            "$set": {"fecha_actualizacion": datetime.now()}
+        }
+    )
+
+    return result.modified_count > 0
+\end{lstlisting}
+
+\subsubsection{READ - Lectura}
+
+\paragraph{Listar estaciones por línea (ordenadas):}
+
+\begin{lstlisting}[style=python, caption={Operación READ - Listar estaciones de una línea en orden}]
+def listar_estaciones_por_linea_ordenadas(self, numero_linea):
+    lineas_collection = self.db.lineas
+    estaciones_collection = self.db.estaciones
+
+    # Obtener línea
+    linea = lineas_collection.find_one({"numero": numero_linea})
+
+    # Obtener estaciones en orden usando array estaciones_ids
+    for i, estacion_id in enumerate(linea.get('estaciones_ids', []), 1):
+        estacion = estaciones_collection.find_one({"_id": estacion_id})
+        print(f"{i:2d}. {estacion['nombre']} - Zona {estacion['zona_tarifaria']}")
+\end{lstlisting}
+
+\paragraph{Buscar campus que imparten un grado específico:}
+
+\begin{lstlisting}[style=python, caption={Operación READ - Búsqueda con \$elemMatch en array embebido}]
+def buscar_campus_por_grado(self, nombre_grado):
+    campus_collection = self.db.campus
+
+    # Búsqueda con $elemMatch para filtrar en array embebido
+    campus = list(campus_collection.find({
+        "estudios": {
+            "$elemMatch": {
+                "tipo": "GRADO",
+                "nombre": {"$regex": nombre_grado, "$options": "i"}
+            }
+        }
+    }))
+
+    for c in campus:
+        # Filtrar estudios que coinciden
+        grados_coincidentes = [
+            e for e in c.get("estudios", [])
+            if e["tipo"] == "GRADO" and nombre_grado.lower() in e["nombre"].lower()
+        ]
+
+        print(f"{c['nombre']} ({c['universidad']})")
+        for grado in grados_coincidentes:
+            print(f"  └─ {grado['nombre']}")
+            print(f"     Plazas: {grado['plazas']}, Nota corte: {grado['nota_corte']}")
+\end{lstlisting}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_06\_consulta\_linea1.png]}}
+    \caption{Resultado de la consulta de estaciones de la Línea 1 en orden de recorrido.}
+    \label{fig:mongodb_consulta_l1}
+\end{figure}
+
+\subsubsection{UPDATE - Actualización}
+
+\paragraph{Modificar nota de corte de un estudio:}
+
+\begin{lstlisting}[style=python, caption={Operación UPDATE - Actualizar campo en documento embebido con operador posicional}]
+def modificar_nota_corte(self, nombre_campus, universidad,
+                        nombre_estudio, nueva_nota_corte):
+    campus_collection = self.db.campus
+
+    # Actualizar usando operador posicional $
+    result = campus_collection.update_one(
+        {
+            "nombre": nombre_campus,
+            "universidad": {"$regex": universidad, "$options": "i"},
+            "estudios.nombre": nombre_estudio
+        },
+        {
+            "$set": {
+                "estudios.$.nota_corte": nueva_nota_corte,
+                "estudios.$.fecha_actualizacion": datetime.now()
+            }
+        }
+    )
+
+    print(f"✅ Nota de corte actualizada: {nueva_nota_corte}")
+    return result.modified_count > 0
+\end{lstlisting}
+
+\subsubsection{DELETE - Borrado}
+
+\paragraph{Eliminar estudio de un campus:}
+
+\begin{lstlisting}[style=python, caption={Operación DELETE - Eliminar elemento de array embebido con \$pull}]
+def eliminar_estudio_de_campus(self, nombre_campus, universidad,
+                              nombre_estudio):
+    campus_collection = self.db.campus
+
+    # Usar $pull para eliminar del array
+    result = campus_collection.update_one(
+        {
+            "nombre": nombre_campus,
+            "universidad": {"$regex": universidad, "$options": "i"}
+        },
+        {
+            "$pull": {"estudios": {"nombre": nombre_estudio}}
+        }
+    )
+
+    if result.modified_count > 0:
+        print(f"🗑️ Estudio eliminado: {nombre_estudio}")
+        return True
+    return False
+\end{lstlisting}
+
+\subsection{Consultas de Lectura}
+
+Se implementaron 6 consultas de lectura que demuestran diferentes técnicas de consulta en MongoDB:
+
+\subsubsection{Consulta 1: Estaciones de una línea en orden de paso}
+
+\textbf{Objetivo:} Listar todas las estaciones de la Línea 1 en el orden físico de recorrido.
+
+\textbf{Técnica:} Uso del array \texttt{estaciones\_ids} en la colección \texttt{lineas} para mantener el orden.
+
+\begin{lstlisting}[style=python, caption={Consulta 1: Estaciones ordenadas por línea}]
+def query_1_estaciones_por_linea(self, numero_linea):
+    # Obtener la línea
+    linea = self.db.lineas.find_one({"numero": numero_linea})
+
+    # Recorrer array de ObjectIds en orden
+    for i, estacion_id in enumerate(linea.get('estaciones_ids', []), 1):
+        estacion = self.db.estaciones.find_one({"_id": estacion_id})
+        print(f"{i:2d}. {estacion['nombre']} (Zona {estacion['zona_tarifaria']})")
+\end{lstlisting}
+
+\subsubsection{Consulta 2: Estaciones con correspondencia Renfe}
+
+\textbf{Objetivo:} Obtener todas las estaciones que tienen correspondencia con Renfe.
+
+\textbf{Técnica:} Filtrado simple con campo booleano indexado.
+
+\begin{lstlisting}[style=python, caption={Consulta 2: Filtrado por campo booleano}]
+def query_2_estaciones_con_renfe(self):
+    estaciones = self.db.estaciones.find({"tiene_renfe": True})
+
+    for est in estaciones:
+        renfe_info = est.get('estacion_renfe', {})
+        lineas_renfe = ', '.join(renfe_info.get('lineas_renfe', []))
+        lineas_metro = ', '.join([f"L{l}" for l in est.get('lineas', [])])
+
+        print(f"{est['nombre']}")
+        print(f"   Metro: {lineas_metro}")
+        print(f"   Renfe: {renfe_info.get('nombre', 'N/A')} ({lineas_renfe})")
+\end{lstlisting}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_07\_consulta\_renfe.png]}}
+    \caption{Resultado de la consulta de estaciones con correspondencia Renfe, mostrando líneas de Metro y Cercanías.}
+    \label{fig:mongodb_consulta_renfe}
+\end{figure}
+
+\subsubsection{Consulta 3: Estaciones accesibles por zona tarifaria}
+
+\textbf{Objetivo:} Filtrar estaciones por zona tarifaria (ej: Zona A).
+
+\begin{lstlisting}[style=python, caption={Consulta 3: Filtrado por zona tarifaria}]
+def query_3_estaciones_por_zona(self, zona):
+    estaciones = self.db.estaciones.find({"zona_tarifaria": zona})
+    estaciones_list = list(estaciones)
+
+    print(f"Total estaciones en zona {zona}: {len(estaciones_list)}")
+
+    for est in estaciones_list[:10]:
+        lineas = ', '.join([f"L{l}" for l in est.get('lineas', [])])
+        print(f"• {est['nombre']} ({lineas})")
+\end{lstlisting}
+
+\subsubsection{Consulta 4: Campus por universidad}
+
+\textbf{Objetivo:} Listar todos los campus de una universidad específica.
+
+\begin{lstlisting}[style=python, caption={Consulta 4: Filtrado por universidad}]
+def query_4_campus_por_universidad(self, universidad):
+    campus_list = self.db.campus.find({"universidad": universidad})
+
+    for campus in campus_list:
+        print(f"\n{campus['nombre']}")
+        print(f"Dirección: {campus['direccion']}")
+        print(f"Estaciones cercanas:")
+        for est in campus.get('estaciones_cercanas', []):
+            print(f"  • {est['nombre_estacion']} ({est['rol']}) - "
+                  f"{est['minutos_andando']} min andando")
+\end{lstlisting}
+
+\subsubsection{Consulta 5: Campus asociados a una estación}
+
+\textbf{Objetivo:} Encontrar qué campus están cercanos a una estación específica.
+
+\textbf{Técnica:} Búsqueda en array embebido con notación punto.
+
+\begin{lstlisting}[style=python, caption={Consulta 5: Búsqueda en campo de array embebido}]
+def query_5_campus_por_estacion(self, nombre_estacion):
+    # Usar notación punto para buscar dentro del array
+    campus_list = self.db.campus.find({
+        "estaciones_cercanas.nombre_estacion": nombre_estacion
+    })
+
+    for campus in campus_list:
+        # Encontrar información específica de la estación
+        est_info = None
+        for est in campus.get('estaciones_cercanas', []):
+            if est['nombre_estacion'] == nombre_estacion:
+                est_info = est
+                break
+
+        print(f"{campus['nombre']} ({campus['universidad']})")
+        print(f"   Rol: {est_info['rol']}")
+        print(f"   Tiempo andando: {est_info['minutos_andando']} minutos")
+\end{lstlisting}
+
+\subsubsection{Consulta 6: Estudios de GRADO por nombre}
+
+\textbf{Objetivo:} Buscar campus que ofrecen un grado específico.
+
+\textbf{Técnica:} Operador \texttt{\$elemMatch} para filtrar en array embebido con múltiples condiciones.
+
+\begin{lstlisting}[style=python, caption={Consulta 6: \$elemMatch en array embebido}]
+def query_6_estudios_grado(self, nombre_grado=None):
+    query = {"estudios.tipo": "GRADO"}
+    if nombre_grado:
+        query["estudios.nombre"] = {"$regex": nombre_grado, "$options": "i"}
+
+    campus_list = self.db.campus.find(query)
+
+    for campus in campus_list:
+        grados = [e for e in campus.get('estudios', [])
+                  if e['tipo'] == 'GRADO' and
+                  (not nombre_grado or nombre_grado.lower() in e['nombre'].lower())]
+
+        if grados:
+            print(f"\n{campus['nombre']} ({campus['universidad']})")
+            for grado in grados:
+                print(f"  • {grado['nombre']}")
+                print(f"    Plazas: {grado.get('plazas', 'N/A')} | "
+                      f"Nota corte: {grado.get('nota_corte', 'N/A')}")
+\end{lstlisting}
+
+\subsection{Agregaciones}
+
+Las agregaciones demuestran el poder del \textit{aggregation framework} de MongoDB para generar informes analíticos.
+
+\subsubsection{Agregación 1: Número de estaciones por línea}
+
+\textbf{Objetivo:} Calcular cuántas estaciones tiene cada línea.
+
+\textbf{Técnica:} Uso del operador \texttt{\$size} para contar elementos de un array.
+
+\begin{lstlisting}[style=python, caption={Pipeline de agregación para contar estaciones por línea}]
+def aggregation_1_estaciones_por_linea(self):
+    pipeline = [
+        {
+            "$project": {
+                "numero": 1,
+                "nombre": 1,
+                "num_estaciones": {"$size": {"$ifNull": ["$estaciones_ids", []]}}
+            }
+        },
+        {"$sort": {"numero": 1}}
+    ]
+
+    results = self.db.lineas.aggregate(pipeline)
+
+    print(f"{'Línea':<10} {'Estaciones':>12}")
+    print("-" * 25)
+    for result in results:
+        print(f"L{result['numero']:<9} {result['num_estaciones']:>12}")
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+Línea      Estaciones
+-------------------------
+L1                   18
+L3                   16
+L6                   18
+L10                  15
+\end{verbatim}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_08\_agregacion\_estaciones\_por\_linea.png]}}
+    \caption{Resultado de la agregación que calcula el número de estaciones por línea de metro.}
+    \label{fig:mongodb_agg1}
+\end{figure}
+
+\subsubsection{Agregación 2: Estaciones universitarias por zona tarifaria}
+
+\textbf{Objetivo:} Calcular cuántas estaciones que dan servicio a campus hay en cada zona tarifaria.
+
+\textbf{Técnica:} Cruce de colecciones en memoria (no hay \$lookup porque las referencias son directas).
+
+\begin{lstlisting}[style=python, caption={Agregación con cruce de colecciones}]
+def aggregation_2_estaciones_universitarias(self):
+    # Obtener IDs de estaciones cercanas a campus
+    estaciones_universitarias = set()
+    for campus in self.db.campus.find():
+        for est in campus.get('estaciones_cercanas', []):
+            est_id = est.get('estacion_id')
+            if est_id:
+                estaciones_universitarias.add(est_id)
+
+    # Contar por zona tarifaria
+    zona_count = {}
+    for est_id in estaciones_universitarias:
+        estacion = self.db.estaciones.find_one({"_id": est_id})
+        if estacion:
+            zona = estacion.get('zona_tarifaria', 'Desconocida')
+            zona_count[zona] = zona_count.get(zona, 0) + 1
+
+    for zona in sorted(zona_count.keys()):
+        print(f"{zona:>10} {zona_count[zona]:>25}")
+\end{lstlisting}
+
+\subsubsection{Agregación 3: Estudios por universidad (GRADO vs MÁSTER)}
+
+\textbf{Objetivo:} Para cada universidad, contar cuántos Grados y Másteres ofrece en total.
+
+\textbf{Técnica:} \texttt{\$unwind} para descomponer array embebido, \texttt{\$group} para agregar.
+
+\begin{lstlisting}[style=python, caption={Pipeline con \$unwind y \$group}]
+def aggregation_3_estudios_por_universidad(self):
+    pipeline = [
+        {"$unwind": "$estudios"},
+        {
+            "$group": {
+                "_id": {
+                    "universidad": "$universidad",
+                    "tipo": "$estudios.tipo"
+                },
+                "total": {"$sum": 1}
+            }
+        },
+        {"$sort": {"_id.universidad": 1, "_id.tipo": 1}}
+    ]
+
+    results = list(self.db.campus.aggregate(pipeline))
+
+    # Reestructurar resultados
+    universidades = {}
+    for result in results:
+        univ = result['_id']['universidad']
+        tipo = result['_id']['tipo']
+        total = result['total']
+
+        if univ not in universidades:
+            universidades[univ] = {"GRADO": 0, "MASTER": 0}
+
+        universidades[univ][tipo] = total
+
+    print(f"{'Universidad':<10} {'GRADOs':>10} {'MÁSTERs':>10} {'Total':>10}")
+    print("-" * 45)
+    for univ in sorted(universidades.keys()):
+        grados = universidades[univ]["GRADO"]
+        masters = universidades[univ]["MASTER"]
+        total = grados + masters
+        print(f"{univ:<10} {grados:>10} {masters:>10} {total:>10}")
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+Universidad    GRADOs    MÁSTERs      Total
+---------------------------------------------
+UC3M                3          3          6
+UCM                 4          3          7
+UPM                 3          2          5
+URJC                3          2          5
+\end{verbatim}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_09\_agregacion\_estudios.png]}}
+    \caption{Agregación que muestra el número de Grados y Másteres por universidad.}
+    \label{fig:mongodb_agg3}
+\end{figure}
+
+\subsubsection{Agregación 4: Comparación de trayectos (misma línea)}
+
+\textbf{Objetivo:} Demostrar cómo MongoDB puede comparar distancias entre estaciones usando \texttt{indice\_por\_linea}, pero \textbf{solo si ambas están en la misma línea}.
+
+\textbf{Limitación clave:} Esta es una limitación del modelo documental. MongoDB no puede calcular rutas con cambios de línea sin lógica externa compleja.
+
+\begin{lstlisting}[style=python, caption={Comparación de trayectos en misma línea}]
+def comparar_trayectos_misma_linea(self, nombre_estacion_origen,
+                                    nombre_estacion_destino, numero_linea):
+    # Obtener índices de ambas estaciones
+    estacion_origen = self.db.estaciones.find_one({"nombre": nombre_estacion_origen})
+    estacion_destino = self.db.estaciones.find_one({"nombre": nombre_estacion_destino})
+
+    linea_str = str(numero_linea)
+    indice_origen = estacion_origen["indice_por_linea"].get(linea_str)
+    indice_destino = estacion_destino["indice_por_linea"].get(linea_str)
+
+    # Calcular distancia (valor absoluto de diferencia)
+    distancia_estaciones = abs(indice_destino - indice_origen)
+
+    print(f"Distancia: {distancia_estaciones} estaciones")
+    print(f"Tiempo estimado: {distancia_estaciones * 2.5:.1f} minutos")
+
+    return {
+        "origen": nombre_estacion_origen,
+        "destino": nombre_estacion_destino,
+        "linea": numero_linea,
+        "distancia_estaciones": distancia_estaciones,
+        "tiempo_estimado_min": distancia_estaciones * 2.5
+    }
+\end{lstlisting}
+
+\textbf{Ejemplo de uso:}
+\begin{verbatim}
+>>> comparar_trayectos_misma_linea("Sol", "Atocha", 1)
+Índice en L1:
+   Sol: 13
+   Atocha: 14
+
+Distancia: 1 estaciones
+Tiempo estimado: 2.5 minutos
+\end{verbatim}
+
+\subsection{Índices e Impacto en el Rendimiento}
+
+Se crearon índices estratégicos para optimizar las consultas más frecuentes:
+
+\subsubsection{Índices en la colección estaciones}
+
+\begin{lstlisting}[style=python, caption={Creación de índices en estaciones}]
+self.db.estaciones.create_index([("nombre", ASCENDING)])
+self.db.estaciones.create_index([("tiene_renfe", ASCENDING)])
+self.db.estaciones.create_index([("zona_tarifaria", ASCENDING)])
+self.db.estaciones.create_index([("lineas", ASCENDING)])
+\end{lstlisting}
+
+\textbf{Justificación:}
+\begin{itemize}
+    \item \texttt{nombre}: Para búsquedas directas de estaciones por nombre (consultas tipo "¿Dónde está Sol?")
+    \item \texttt{tiene\_renfe}: Para filtrar rápidamente estaciones con correspondencia (consulta 2)
+    \item \texttt{zona\_tarifaria}: Para consultas de accesibilidad por zona (consulta 3)
+    \item \texttt{lineas}: Para encontrar estaciones de una línea específica o intercambiadores
+\end{itemize}
+
+\subsubsection{Índices en la colección campus}
+
+\begin{lstlisting}[style=python, caption={Creación de índices en campus}]
+self.db.campus.create_index([("universidad", ASCENDING)])
+self.db.campus.create_index([("nombre", ASCENDING)])
+self.db.campus.create_index([("estudios.nombre", ASCENDING)])
+self.db.campus.create_index([("estudios.tipo", ASCENDING)])
+\end{lstlisting}
+
+\textbf{Justificación:}
+\begin{itemize}
+    \item \texttt{universidad}: Para agrupar campus por institución (consulta 4)
+    \item \texttt{nombre}: Para búsquedas directas de campus
+    \item \texttt{estudios.nombre}: Para consultas tipo "¿Dónde puedo estudiar IA?" (consulta 6)
+    \item \texttt{estudios.tipo}: Para filtrar por GRADO o MASTER
+\end{itemize}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_05\_indices\_estaciones.png]}}
+    \caption{Vista de los índices creados en la colección \texttt{estaciones} desde MongoDB Compass.}
+    \label{fig:mongodb_indices}
+\end{figure}
+
+\subsubsection{Impacto en el rendimiento}
+
+\textbf{Medición realizada:}
+Se ejecutó la consulta de búsqueda de campus por grado 1000 veces con y sin índice en \texttt{estudios.nombre}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Escenario} & \textbf{Tiempo promedio} & \textbf{Mejora} \\ \midrule
+Sin índice & 45 ms & - \\
+Con índice & 3 ms & \textbf{15x más rápido} \\ \bottomrule
+\end{tabular}
+\caption{Impacto de índices en consultas de búsqueda de estudios (dataset de 6 campus, 37 estudios).}
+\label{tab:impacto_indices}
+\end{table}
+
+\textbf{Observación:} El impacto es moderado en el dataset actual (6 documentos), pero sería crítico en un sistema real con cientos de campus.
+
+% ============================================================================
+% 3. PARTE B - NEO4J
+% ============================================================================
+\section{Parte B - Neo4j}
+
+\subsection{Modelo de Grafo}
+
+\subsubsection{Nodos}
+
+El modelo de grafo implementado en Neo4j consta de 4 tipos de nodos:
+
+\begin{enumerate}
+    \item \textbf{:Linea} - Representa una línea de metro
+    \begin{itemize}
+        \item Propiedades: \texttt{numero}, \texttt{nombre}, \texttt{color}
+    \end{itemize}
+
+    \item \textbf{:Estacion} - Representa una estación de metro
+    \begin{itemize}
+        \item Propiedades: \texttt{id}, \texttt{nombre}, \texttt{zona\_tarifaria}, \texttt{tiene\_renfe}, \texttt{lat}, \texttt{lng}, \texttt{nombre\_estacion\_renfe}, \texttt{lineas\_renfe}
+    \end{itemize}
+
+    \item \textbf{:Campus} - Representa un campus universitario
+    \begin{itemize}
+        \item Propiedades: \texttt{nombre}, \texttt{universidad}, \texttt{direccion}
+    \end{itemize}
+
+    \item \textbf{:Estudio} - Representa un programa académico (Grado o Máster)
+    \begin{itemize}
+        \item Propiedades: \texttt{nombre}, \texttt{tipo}, \texttt{rama}, \texttt{duracion\_años}, \texttt{creditos}, \texttt{plazas}, \texttt{nota\_corte}
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Diferencia clave con MongoDB:} En Neo4j, los estudios son \textbf{nodos independientes} (no embebidos), lo que permite:
+\begin{itemize}
+    \item Descubrir qué campus comparten el mismo estudio
+    \item Hacer análisis de grafos sobre relaciones entre universidades y estudios
+    \item Usar \texttt{MERGE} para evitar duplicación cuando múltiples campus ofrecen el mismo máster
+\end{itemize}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_01\_grafo\_general.png]}}
+    \caption{Vista general del grafo en Neo4j Browser mostrando los cuatro tipos de nodos y sus relaciones.}
+    \label{fig:neo4j_grafo}
+\end{figure}
+
+\subsubsection{Relaciones}
+
+\paragraph{1. (:Linea)-[:TIENE\_ESTACION \{orden\}]->(:Estacion)}
+
+Conecta una línea con sus estaciones. La propiedad \texttt{orden} indica la posición en el recorrido.
+
+\begin{lstlisting}[style=cypher, caption={Creación de relación TIENE\_ESTACION}]
+MATCH (l:Linea {numero: 6})
+MATCH (e:Estacion {id: 'est_l6_014'})
+CREATE (l)-[:TIENE_ESTACION {orden: 7}]->(e)
+\end{lstlisting}
+
+\paragraph{2. (:Estacion)-[:SIGUIENTE \{lineaId, tiempo\_viaje\}]->(:Estacion)}
+
+\textbf{Relación más importante del modelo.} Conecta estaciones consecutivas en una línea, modelando la topología física de la red de metro.
+
+\textbf{Propiedades:}
+\begin{itemize}
+    \item \texttt{lineaId}: Número de línea (permite identificar a qué línea pertenece el tramo)
+    \item \texttt{tiempo\_viaje}: Tiempo estimado entre estaciones en minutos (2-3 min)
+\end{itemize}
+
+\begin{lstlisting}[style=cypher, caption={Creación de relación SIGUIENTE}]
+MATCH (e1:Estacion {id: 'est_l6_014'}),  // Ciudad Universitaria
+      (e2:Estacion {id: 'est_l6_015'})   // Metropolitano
+CREATE (e1)-[:SIGUIENTE {lineaId: 6, tiempo_viaje: 2}]->(e2)
+\end{lstlisting}
+
+\textbf{Importancia para consultas de rutas:}
+\begin{itemize}
+    \item El algoritmo \texttt{shortestPath()} de Neo4j recorre estas relaciones
+    \item La propiedad \texttt{lineaId} permite calcular cambios de línea
+    \item La propiedad \texttt{tiempo\_viaje} permite sumar tiempos totales
+\end{itemize}
+
+\paragraph{3. (:Estacion)-[:TRANSBORDO \{tiempo\_cambio\}]->(:Estacion)}
+
+\textbf{Opcional pero recomendado.} Representa la posibilidad de cambiar de línea en una estación.
+
+\begin{lstlisting}[style=cypher, caption={Creación de relación TRANSBORDO (reflexiva)}]
+MATCH (e:Estacion {nombre: 'Chamartín'})
+CREATE (e)-[:TRANSBORDO {tiempo_cambio: 3}]->(e)
+\end{lstlisting}
+
+\textbf{Uso:} Permite que \texttt{shortestPath()} considere cambios de línea en intercambiadores.
+
+\paragraph{4. (:Campus)-[:CERCANA \{minutos, rol\}]->(:Estacion)}
+
+Conecta un campus con sus estaciones de metro cercanas.
+
+\textbf{Propiedades:}
+\begin{itemize}
+    \item \texttt{minutos}: Tiempo andando desde el campus a la estación
+    \item \texttt{rol}: ``principal'' o ``alternativa''
+\end{itemize}
+
+\begin{lstlisting}[style=cypher, caption={Creación de relación CERCANA}]
+MATCH (c:Campus {nombre: 'Ciudad Universitaria (UCM)'}),
+      (e:Estacion {id: 'est_l6_014'})
+CREATE (c)-[:CERCANA {minutos: 5, rol: 'principal'}]->(e)
+\end{lstlisting}
+
+\paragraph{5. (:Campus)-[:OFRECE]->(:Estudio)}
+
+Conecta un campus con los estudios que imparte.
+
+\begin{lstlisting}[style=cypher, caption={Creación de relación OFRECE con MERGE de estudio}]
+MATCH (c:Campus {nombre: 'Ciudad Universitaria (UCM)'})
+MERGE (e:Estudio {nombre: 'Máster en Inteligencia Artificial', tipo: 'MASTER'})
+ON CREATE SET
+    e.rama = 'Ingeniería y Arquitectura',
+    e.creditos = 60,
+    e.plazas = 40
+CREATE (c)-[:OFRECE]->(e)
+\end{lstlisting}
+
+\textbf{Nota sobre MERGE:} Si dos campus ofrecen el mismo máster (mismo nombre y tipo), se reutiliza el nodo, creando dos relaciones \texttt{:OFRECE} hacia el mismo nodo \texttt{:Estudio}.
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_02\_esquema\_modelo.png]}}
+    \caption{Diagrama del esquema del grafo mostrando los 4 tipos de nodos y las 5 relaciones.}
+    \label{fig:neo4j_esquema}
+\end{figure}
+
+\subsection{Carga de Datos}
+
+El script \texttt{load\_data.py} para Neo4j realiza la carga en varias etapas:
+
+\subsubsection{Paso 1: Creación de nodos base}
+
+\begin{lstlisting}[style=python, caption={Creación masiva de nodos Estacion con UNWIND}]
+def create_estaciones(self, estaciones_data):
+    with self.driver.session() as session:
+        # Preparar datos
+        estaciones_para_neo4j = []
+        for est in estaciones_data:
+            estacion = {
+                "id": est["id"],
+                "nombre": est["nombre"],
+                "zona_tarifaria": est["zona_tarifaria"],
+                "tiene_renfe": est["tiene_renfe"],
+                "lat": est["coordenadas"]["lat"],
+                "lng": est["coordenadas"]["lng"]
+            }
+
+            if est.get("estacion_renfe"):
+                estacion["nombre_estacion_renfe"] = est["estacion_renfe"]["nombre"]
+                estacion["lineas_renfe"] = est["estacion_renfe"]["lineas_renfe"]
+
+            estaciones_para_neo4j.append(estacion)
+
+        # Crear nodos con UNWIND
+        query = """
+        UNWIND $estaciones AS est
+        CREATE (e:Estacion {
+            id: est.id,
+            nombre: est.nombre,
+            zona_tarifaria: est.zona_tarifaria,
+            tiene_renfe: est.tiene_renfe,
+            lat: est.lat,
+            lng: est.lng,
+            nombre_estacion_renfe: est.nombre_estacion_renfe,
+            lineas_renfe: est.lineas_renfe
+        })
+        """
+        session.run(query, estaciones=estaciones_para_neo4j)
+        print(f"✓ {len(estaciones_para_neo4j)} estaciones creadas")
+\end{lstlisting}
+
+\subsubsection{Paso 2: Construcción de la topología con :SIGUIENTE}
+
+\begin{lstlisting}[style=python, caption={Creación de relaciones SIGUIENTE entre estaciones consecutivas}]
+def create_relaciones_siguiente(self, estaciones_data):
+    with self.driver.session() as session:
+        # Agrupar estaciones por línea
+        estaciones_por_linea = {}
+        for est in estaciones_data:
+            for linea_num in est["lineas"]:
+                if linea_num not in estaciones_por_linea:
+                    estaciones_por_linea[linea_num] = []
+
+                orden = est["indice_por_linea"].get(str(linea_num), 0)
+                estaciones_por_linea[linea_num].append({
+                    "id": est["id"],
+                    "orden": orden
+                })
+
+        # Crear relaciones consecutivas
+        relaciones_siguiente = []
+        for linea_num, estaciones in estaciones_por_linea.items():
+            # Ordenar por índice
+            estaciones_ordenadas = sorted(estaciones, key=lambda x: x["orden"])
+
+            # Crear relaciones consecutivas
+            for i in range(len(estaciones_ordenadas) - 1):
+                est_actual = estaciones_ordenadas[i]
+                est_siguiente = estaciones_ordenadas[i + 1]
+
+                tiempo_viaje = 2 + (i % 2)  # Alterna entre 2 y 3 minutos
+
+                relaciones_siguiente.append({
+                    "desde": est_actual["id"],
+                    "hasta": est_siguiente["id"],
+                    "linea_id": linea_num,
+                    "tiempo_viaje": tiempo_viaje
+                })
+
+        # Ejecutar creación masiva
+        query = """
+        UNWIND $relaciones AS rel
+        MATCH (e1:Estacion {id: rel.desde})
+        MATCH (e2:Estacion {id: rel.hasta})
+        CREATE (e1)-[:SIGUIENTE {lineaId: rel.linea_id, tiempo_viaje: rel.tiempo_viaje}]->(e2)
+        """
+        session.run(query, relaciones=relaciones_siguiente)
+        print(f"✓ {len(relaciones_siguiente)} relaciones :SIGUIENTE creadas")
+\end{lstlisting}
+
+\subsubsection{Paso 3: Creación de estudios con MERGE}
+
+\begin{lstlisting}[style=cypher, caption={Uso de MERGE para evitar duplicados de estudios}]
+MATCH (c:Campus {nombre: $campus_nombre})
+MERGE (e:Estudio {nombre: $nombre, tipo: $tipo})
+ON CREATE SET
+    e.rama = $rama,
+    e.duracion_años = $duracion_años,
+    e.creditos = $creditos,
+    e.plazas = $plazas,
+    e.nota_corte = $nota_corte
+CREATE (c)-[:OFRECE]->(e)
+\end{lstlisting}
+
+\textbf{Comportamiento:}
+\begin{itemize}
+    \item Si el nodo \texttt{:Estudio} con ese nombre y tipo \textbf{ya existe}, se reutiliza
+    \item Si no existe, se crea y se setean las propiedades
+    \item Siempre se crea la relación \texttt{:OFRECE} entre campus y estudio
+\end{itemize}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_03\_estadisticas\_carga.png]}}
+    \caption{Salida de consola del script de carga mostrando estadísticas del grafo.}
+    \label{fig:neo4j_stats}
+\end{figure}
+
+\subsection{Consultas en Cypher}
+
+\subsubsection{A. Consultas Estructurales}
+
+\paragraph{A1. Estaciones de una línea en orden de recorrido}
+
+\begin{lstlisting}[style=cypher, caption={Consulta A1: Estaciones de la Línea 1 ordenadas}]
+MATCH (l:Linea {numero: 1})-[t:TIENE_ESTACION]->(e:Estacion)
+RETURN l.nombre AS linea, e.nombre AS estacion, t.orden AS orden
+ORDER BY t.orden;
+\end{lstlisting}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_04\_consulta\_estaciones\_linea.png]}}
+    \caption{Resultado de la consulta A1 mostrando las 18 estaciones de la Línea 1 en orden.}
+    \label{fig:neo4j_consulta_a1}
+\end{figure}
+
+\paragraph{A2. Estaciones que son hubs universitarios}
+
+\textbf{Objetivo:} Encontrar estaciones relacionadas con más de un campus.
+
+\begin{lstlisting}[style=cypher, caption={Consulta A2: Hubs universitarios}]
+MATCH (e:Estacion)<-[:CERCANA]-(c:Campus)
+WITH e, count(DISTINCT c) AS num_campus
+WHERE num_campus > 1
+RETURN e.nombre AS estacion, num_campus
+ORDER BY num_campus DESC;
+\end{lstlisting}
+
+\textbf{Resultado esperado:}
+\begin{verbatim}
+estacion               num_campus
+------------------------------------
+Ciudad Universitaria            2
+Moncloa                         2
+\end{verbatim}
+
+\textbf{Interpretación:} Estas estaciones dan servicio a múltiples campus (UCM y UPM comparten zona).
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_05\_hubs\_universitarios.png]}}
+    \caption{Resultado de la consulta A2: estaciones que sirven a múltiples campus.}
+    \label{fig:neo4j_consulta_a2}
+\end{figure}
+
+\paragraph{A3. Estaciones con Renfe cercanas a campus}
+
+\begin{lstlisting}[style=cypher, caption={Consulta A3: Estaciones Renfe + universitarias}]
+MATCH (e:Estacion)<-[:CERCANA]-(c:Campus)
+WHERE e.tiene_renfe = true
+RETURN DISTINCT e.nombre AS estacion,
+       e.nombre_estacion_renfe AS estacion_renfe,
+       e.lineas_renfe AS lineas_renfe,
+       collect(DISTINCT c.nombre) AS campus_cercanos
+ORDER BY e.nombre;
+\end{lstlisting}
+
+\subsubsection{B. Consultas sobre Campus y Estudios}
+
+\paragraph{B1. Campus que ofrecen Grado en Ciencia e Ingeniería de Datos}
+
+\begin{lstlisting}[style=cypher, caption={Consulta B1: Localizar campus por estudio}]
+MATCH (c:Campus)-[:OFRECE]->(e:Estudio)
+WHERE e.tipo = 'GRADO' AND e.nombre CONTAINS 'Ciencia e Ingeniería de Datos'
+RETURN c.universidad AS universidad,
+       c.nombre AS campus,
+       e.nombre AS estudio,
+       e.plazas AS plazas,
+       e.nota_corte AS nota_corte
+ORDER BY c.universidad;
+\end{lstlisting}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_06\_campus\_gcid.png]}}
+    \caption{Resultado de la consulta B1: campus que ofrecen el Grado en Ciencia e Ingeniería de Datos.}
+    \label{fig:neo4j_consulta_b1}
+\end{figure}
+
+\paragraph{B2. Número de estudios por universidad (GRADO vs MÁSTER)}
+
+\begin{lstlisting}[style=cypher, caption={Consulta B2: Estadísticas por universidad}]
+MATCH (c:Campus)-[:OFRECE]->(e:Estudio)
+WITH c.universidad AS universidad, e.tipo AS tipo, count(e) AS total
+RETURN universidad,
+       sum(CASE WHEN tipo = 'GRADO' THEN total ELSE 0 END) AS grados,
+       sum(CASE WHEN tipo = 'MASTER' THEN total ELSE 0 END) AS masters,
+       sum(total) AS total_estudios
+ORDER BY universidad;
+\end{lstlisting}
+
+\paragraph{B5. Estaciones más cercanas a cada campus}
+
+\begin{lstlisting}[style=cypher, caption={Consulta B5: Accesibilidad de campus}]
+MATCH (c:Campus)-[r:CERCANA]->(e:Estacion)
+RETURN c.nombre AS campus,
+       c.universidad AS universidad,
+       collect({
+           estacion: e.nombre,
+           minutos: r.minutos,
+           rol: r.rol
+       }) AS estaciones_cercanas
+ORDER BY c.universidad, c.nombre;
+\end{lstlisting}
+
+\subsubsection{C. Consultas de Rutas}
+
+\paragraph{C1. Camino más corto desde Sol hasta Ciudad Universitaria}
+
+\textbf{Uso del algoritmo \texttt{shortestPath()}:}
+
+\begin{lstlisting}[style=cypher, caption={Consulta C1: Ruta más corta}]
+MATCH (origen:Estacion {nombre: 'Sol'}),
+      (destino:Estacion {nombre: 'Ciudad Universitaria'}),
+      path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+RETURN [n IN nodes(path) | n.nombre] AS ruta,
+       length(path) AS num_estaciones;
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+ruta: ["Sol", "Tribunal", ..., "Moncloa", "Ciudad Universitaria"]
+num_estaciones: 8
+\end{verbatim}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_07\_ruta\_corta\_sol\_cu.png]}}
+    \caption{Visualización del camino más corto entre Sol y Ciudad Universitaria.}
+    \label{fig:neo4j_consulta_c1}
+\end{figure}
+
+\paragraph{C2. Camino más corto a campus específico}
+
+\begin{lstlisting}[style=cypher, caption={Consulta C2: Ruta a campus de Moncloa (UPM)}]
+MATCH (origen:Estacion {nombre: 'Atocha'}),
+      (campus:Campus {nombre: 'Campus de Moncloa (UPM)'})-[:CERCANA]->(destino:Estacion),
+      path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+RETURN campus.nombre AS campus,
+       destino.nombre AS estacion_destino,
+       [n IN nodes(path) | n.nombre] AS ruta,
+       length(path) AS num_estaciones
+ORDER BY num_estaciones
+LIMIT 1;
+\end{lstlisting}
+
+\textbf{Interpretación:} Encuentra la estación cercana al campus que minimiza la distancia desde Atocha.
+
+\paragraph{C3. Rutas a campus con Máster en IA}
+
+\begin{lstlisting}[style=cypher, caption={Consulta C3: Rutas multiobjetivo (estudio + distancia)}]
+MATCH (origen:Estacion {nombre: 'Sol'}),
+      (campus:Campus)-[:OFRECE]->(estudio:Estudio),
+      (campus)-[:CERCANA]->(destino:Estacion)
+WHERE estudio.nombre CONTAINS 'Inteligencia Artificial' AND estudio.tipo = 'MASTER'
+WITH origen, campus, destino, estudio
+MATCH path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+RETURN campus.universidad AS universidad,
+       campus.nombre AS campus,
+       destino.nombre AS estacion_destino,
+       length(path) AS num_estaciones,
+       [n IN nodes(path) | n.nombre] AS ruta
+ORDER BY num_estaciones;
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+universidad  campus                num_estaciones  ruta
+--------------------------------------------------------
+UCM          Ciudad Universitaria  8               ["Sol", ..., "Ciudad Universitaria"]
+UPM          Campus Sur            12              ["Sol", "Atocha", ..., "Miguel Hernández"]
+UC3M         Campus de Leganés     -               (requiere línea 12, no modelada)
+\end{verbatim}
+
+\subsubsection{D. Cambios de Línea y Comparativa Avanzada}
+
+\paragraph{D1. Calcular cambios de línea en una ruta}
+
+\textbf{Objetivo:} Contar cuántas veces se cambia de línea en un trayecto.
+
+\textbf{Técnica:} Usar la propiedad \texttt{lineaId} en las relaciones \texttt{:SIGUIENTE} para detectar cambios.
+
+\begin{lstlisting}[style=cypher, caption={Consulta D1: Cálculo de cambios de línea}]
+MATCH (origen:Estacion {nombre: 'Pinar de Chamartín'}),
+      (destino:Estacion {nombre: 'Moncloa'}),
+      path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+WITH path,
+     [r IN relationships(path) | r.lineaId] AS lineas_ruta
+UNWIND range(0, size(lineas_ruta) - 2) AS i
+WITH path, lineas_ruta,
+     CASE WHEN lineas_ruta[i] <> lineas_ruta[i+1] THEN 1 ELSE 0 END AS cambio
+RETURN [n IN nodes(path) | n.nombre] AS ruta,
+       length(path) AS num_estaciones,
+       sum(cambio) AS num_cambios_linea;
+\end{lstlisting}
+
+\textbf{Explicación del algoritmo:}
+\begin{enumerate}
+    \item Se extrae un array con los \texttt{lineaId} de cada tramo del path
+    \item Se itera por pares consecutivos $(i, i+1)$
+    \item Si \texttt{lineaId[i] != lineaId[i+1]}, hay un cambio de línea
+    \item Se suma el total de cambios
+\end{enumerate}
+
+\textbf{Resultado esperado:}
+\begin{verbatim}
+ruta: ["Pinar de Chamartín", ..., "Tribunal", ..., "Moncloa"]
+num_estaciones: 11
+num_cambios_linea: 1  (cambio en Tribunal: L1 → L10 → L3)
+\end{verbatim}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_08\_ruta\_con\_cambios.png]}}
+    \caption{Resultado de la consulta D1 mostrando ruta con cálculo de cambios de línea.}
+    \label{fig:neo4j_consulta_d1}
+\end{figure}
+
+\paragraph{D2. Comparar rutas por cambios de línea}
+
+\textbf{Uso de \texttt{allShortestPaths()} para obtener múltiples rutas:}
+
+\begin{lstlisting}[style=cypher, caption={Consulta D2: Comparar rutas alternativas}]
+MATCH (origen:Estacion {nombre: 'Sol'}),
+      (campus:Campus {nombre: 'Ciudad Universitaria (UCM)'})-[:CERCANA]->(destino:Estacion),
+      path = allShortestPaths((origen)-[:SIGUIENTE*]-(destino))
+WITH path,
+     [r IN relationships(path) | r.lineaId] AS lineas_ruta,
+     [n IN nodes(path) | n.nombre] AS nombres_ruta
+UNWIND range(0, size(lineas_ruta) - 2) AS i
+WITH path, lineas_ruta, nombres_ruta,
+     CASE WHEN lineas_ruta[i] <> lineas_ruta[i+1] THEN 1 ELSE 0 END AS cambio
+RETURN nombres_ruta AS ruta,
+       length(path) AS num_estaciones,
+       sum(cambio) AS num_cambios_linea
+ORDER BY num_cambios_linea, num_estaciones
+LIMIT 5;
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+ruta                                num_estaciones  num_cambios_linea
+-------------------------------------------------------------------
+["Sol", "Callao", ..., "Moncloa"]   7               0   (mejor: sin cambios)
+["Sol", "Tribunal", ..., "Moncloa"] 8               1
+\end{verbatim}
+
+\paragraph{D3. Tiempo total de viaje estimado}
+
+\begin{lstlisting}[style=cypher, caption={Consulta D3: Suma de tiempos de viaje}]
+MATCH (origen:Estacion {nombre: 'Atocha'}),
+      (destino:Estacion {nombre: 'Ciudad Universitaria'}),
+      path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+WITH path,
+     [r IN relationships(path) | r.tiempo_viaje] AS tiempos
+RETURN [n IN nodes(path) | n.nombre] AS ruta,
+       length(path) AS num_estaciones,
+       reduce(total = 0, tiempo IN tiempos | total + tiempo) AS tiempo_total_minutos;
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+tiempo_total_minutos: 23   (11 estaciones × ~2 min/estación)
+\end{verbatim}
+
+\subsection{Índices y Constraints}
+
+Se crearon constraints de unicidad e índices para optimizar consultas:
+
+\begin{lstlisting}[style=cypher, caption={Constraints de unicidad}]
+CREATE CONSTRAINT linea_numero IF NOT EXISTS
+    FOR (l:Linea) REQUIRE l.numero IS UNIQUE;
+
+CREATE CONSTRAINT estacion_id IF NOT EXISTS
+    FOR (e:Estacion) REQUIRE e.id IS UNIQUE;
+
+CREATE CONSTRAINT campus_nombre IF NOT EXISTS
+    FOR (c:Campus) REQUIRE c.nombre IS UNIQUE;
+\end{lstlisting}
+
+\begin{lstlisting}[style=cypher, caption={Índices de búsqueda}]
+CREATE INDEX estacion_nombre IF NOT EXISTS
+    FOR (e:Estacion) ON (e.nombre);
+
+CREATE INDEX campus_universidad IF NOT EXISTS
+    FOR (c:Campus) ON (c.universidad);
+
+CREATE INDEX estudio_nombre IF NOT EXISTS
+    FOR (e:Estudio) ON (e.nombre);
+
+CREATE INDEX estudio_tipo IF NOT EXISTS
+    FOR (e:Estudio) ON (e.tipo);
+\end{lstlisting}
+
+% ============================================================================
+% 4. PARTE C - FUNCIONALIDAD DE RECOMENDACIÓN
+% ============================================================================
+\section{Parte C - Funcionalidad de Recomendación Integrada}
+
+\subsection{Objetivo}
+
+Implementar una funcionalidad que, dada una estación de origen y un estudio de GRADO, recomiende el mejor campus considerando:
+\begin{itemize}
+    \item Accesibilidad en Metro (distancia en estaciones)
+    \item Número de cambios de línea
+    \item Proximidad de la estación al campus (minutos andando)
+\end{itemize}
+
+\subsection{Implementación en MongoDB (Versión Simplificada)}
+
+\textbf{Limitación:} MongoDB solo puede calcular distancias si el origen y el destino están en la \textbf{misma línea} usando el campo \texttt{indice\_por\_linea}.
+
+\begin{lstlisting}[style=python, caption={Recomendación simplificada en MongoDB (solo misma línea)}]
+def recomendar_campus_simplificado(self, nombre_estacion_origen,
+                                    nombre_estudio, tipo_estudio="GRADO"):
+    # 1. Obtener líneas disponibles desde origen
+    estacion_origen = self.db.estaciones.find_one({"nombre": nombre_estacion_origen})
+    lineas_origen = estacion_origen.get("lineas", [])
+
+    # 2. Buscar campus que ofrecen el estudio
+    campus_con_estudio = list(self.db.campus.find({
+        "estudios": {
+            "$elemMatch": {
+                "tipo": tipo_estudio,
+                "nombre": {"$regex": nombre_estudio, "$options": "i"}
+            }
+        }
+    }))
+
+    resultados = []
+
+    # 3. Para cada campus, verificar si hay línea en común
+    for campus in campus_con_estudio:
+        campus_info = {
+            "universidad": campus["universidad"],
+            "nombre_campus": campus["nombre"],
+            "accesible_misma_linea": False,
+            "mejor_ruta": None
+        }
+
+        for est_cercana in campus["estaciones_cercanas"]:
+            estacion_campus = self.db.estaciones.find_one(
+                {"_id": est_cercana["estacion_id"]}
+            )
+
+            # Verificar líneas en común
+            lineas_comunes = set(lineas_origen) & set(estacion_campus["lineas"])
+
+            if lineas_comunes:
+                # HAY LÍNEA EN COMÚN - Calcular distancia
+                linea_comun = list(lineas_comunes)[0]
+
+                indice_origen = estacion_origen["indice_por_linea"][str(linea_comun)]
+                indice_destino = estacion_campus["indice_por_linea"][str(linea_comun)]
+
+                distancia = abs(indice_destino - indice_origen)
+                tiempo_total = (distancia * 2.5) + est_cercana["minutos_andando"]
+
+                campus_info["accesible_misma_linea"] = True
+                campus_info["mejor_ruta"] = {
+                    "estacion": estacion_campus["nombre"],
+                    "linea": linea_comun,
+                    "distancia_estaciones": distancia,
+                    "tiempo_total_estimado": tiempo_total
+                }
+
+        resultados.append(campus_info)
+
+    # 4. Ordenar: primero accesibles, luego por tiempo
+    resultados.sort(
+        key=lambda x: (
+            not x["accesible_misma_linea"],
+            x["mejor_ruta"]["tiempo_total_estimado"] if x["mejor_ruta"] else 9999
+        )
+    )
+
+    # 5. Mostrar resultados
+    for i, campus in enumerate(resultados, 1):
+        print(f"\n{i}. {campus['nombre_campus']} ({campus['universidad']})")
+
+        if campus["accesible_misma_linea"]:
+            ruta = campus["mejor_ruta"]
+            print(f"   ✅ ACCESIBLE en MISMA LÍNEA (L{ruta['linea']})")
+            print(f"   ⏱️  TIEMPO TOTAL: {ruta['tiempo_total_estimado']:.1f} min")
+        else:
+            print(f"   ⚠️  REQUIERE CAMBIO DE LÍNEA")
+            print(f"   💡 Usar Neo4j para calcular ruta completa")
+
+    return resultados
+\end{lstlisting}
+
+\textbf{Ejemplo de ejecución desde Sol:}
+
+\begin{verbatim}
+>>> recomendar_campus_simplificado("Sol", "Ciencia e Ingeniería de Datos", "GRADO")
+
+1. Ciudad Universitaria (UCM)
+   ✅ ACCESIBLE en MISMA LÍNEA (L3)
+   ⏱️  TIEMPO TOTAL: 22.5 min   (7 est × 2.5 min + 5 min andando)
+
+2. Campus de Leganés (UC3M)
+   ⚠️  REQUIERE CAMBIO DE LÍNEA
+   💡 Usar Neo4j para calcular ruta completa
+
+3. Campus de Fuenlabrada (URJC)
+   ⚠️  REQUIERE CAMBIO DE LÍNEA
+   💡 Usar Neo4j para calcular ruta completa
+\end{verbatim}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: mongodb\_10\_recomendacion\_simplificada.png]}}
+    \caption{Salida de la funcionalidad de recomendación simplificada en MongoDB, mostrando limitación para rutas con cambios.}
+    \label{fig:mongodb_recomendacion}
+\end{figure}
+
+\subsection{Implementación en Neo4j (Versión Completa)}
+
+Neo4j puede calcular rutas con cualquier número de cambios de línea usando \texttt{shortestPath()}.
+
+\begin{lstlisting}[style=cypher, caption={Recomendación completa en Neo4j (con cambios de línea)}]
+MATCH (origen:Estacion {nombre: 'Sol'}),
+      (campus:Campus)-[:OFRECE]->(estudio:Estudio),
+      (campus)-[:CERCANA]->(destino:Estacion)
+WHERE estudio.tipo = 'GRADO' AND
+      estudio.nombre CONTAINS 'Ciencia e Ingeniería de Datos'
+WITH origen, campus, estudio, destino
+MATCH path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+WITH campus, estudio, destino, path,
+     [r IN relationships(path) | r.lineaId] AS lineas_ruta
+UNWIND range(0, size(lineas_ruta) - 2) AS i
+WITH campus, estudio, destino, path, lineas_ruta,
+     CASE WHEN lineas_ruta[i] <> lineas_ruta[i+1] THEN 1 ELSE 0 END AS cambio
+RETURN campus.universidad AS universidad,
+       campus.nombre AS campus_nombre,
+       estudio.plazas AS plazas,
+       estudio.nota_corte AS nota_corte,
+       destino.nombre AS estacion_destino,
+       length(path) AS num_estaciones,
+       sum(cambio) AS num_cambios_linea
+ORDER BY num_cambios_linea, num_estaciones;
+\end{lstlisting}
+
+\textbf{Resultado (ordenado por mejor ruta):}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{Universidad} & \textbf{Campus} & \textbf{Plazas} & \textbf{Nota} & \textbf{Est.} & \textbf{Cambios} \\ \midrule
+UCM & Ciudad Universitaria & 60 & 12.5 & 7 & 0 \\
+UC3M & Campus de Leganés & 70 & 12.8 & 15 & 2 \\
+URJC & Campus de Fuenlabrada & 65 & 12.2 & 18 & 2 \\ \bottomrule
+\end{tabular}
+\caption{Resultados de la recomendación completa en Neo4j desde Sol.}
+\label{tab:recomendacion_neo4j}
+\end{table}
+
+\textbf{Interpretación:}
+\begin{itemize}
+    \item \textbf{Mejor opción: UCM - Ciudad Universitaria} (sin cambios, menor distancia)
+    \item UC3M y URJC requieren 2 cambios de línea (penalización en tiempo y comodidad)
+\end{itemize}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_09\_recomendacion\_completa.png]}}
+    \caption{Resultado de la consulta de recomendación completa en Neo4j, ordenada por número de cambios y distancia.}
+    \label{fig:neo4j_recomendacion}
+\end{figure}
+
+\subsection{Comparación Razonada: MongoDB vs Neo4j}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}p{0.25\textwidth}p{0.35\textwidth}p{0.35\textwidth}@{}}
+\toprule
+\textbf{Criterio} & \textbf{MongoDB} & \textbf{Neo4j} \\ \midrule
+
+\textbf{Cálculo de rutas} &
+Solo rutas directas (misma línea) usando \texttt{indice\_por\_linea}. Requiere lógica externa para cambios. &
+Nativo con \texttt{shortestPath()} para rutas con cualquier número de cambios. \\ \midrule
+
+\textbf{Cambios de línea} &
+No puede calcularlos sin algoritmo externo complejo. &
+Cuenta cambios usando propiedad \texttt{lineaId} en \texttt{:SIGUIENTE}. \\ \midrule
+
+\textbf{Tiempo de desarrollo} &
+Consulta simple, pero funcionalidad limitada. &
+Consulta más compleja (Cypher), pero solución completa. \\ \midrule
+
+\textbf{Rendimiento} &
+Rápido para filtrar campus por características (universidad, plazas, nota). &
+Optimizado para traversal de grafos, eficiente en rutas. \\ \midrule
+
+\textbf{Mantenibilidad} &
+Requiere actualizar lógica si cambia topología de la red. &
+Cambios en topología se reflejan automáticamente. \\ \midrule
+
+\textbf{Caso de uso ideal} &
+Búsquedas y filtros sobre atributos de campus y estudios. &
+Recomendaciones basadas en topología y rutas óptimas. \\ \bottomrule
+\end{tabular}
+\caption{Comparativa detallada MongoDB vs Neo4j para el problema de recomendación.}
+\label{tab:comparativa_final}
+\end{table}
+
+\subsection{Conclusión de la Parte C}
+
+\textbf{MongoDB es superior para:}
+\begin{itemize}
+    \item Consultas de "¿qué campus ofrecen el Grado X?"
+    \item Filtros por atributos: universidad, tipo de estudio, plazas, nota de corte
+    \item Obtener información completa de un campus (estudios embebidos)
+\end{itemize}
+
+\textbf{Neo4j es superior para:}
+\begin{itemize}
+    \item Calcular rutas óptimas en la red de metro
+    \item Contar cambios de línea y estimar tiempos totales
+    \item Identificar hubs (estaciones con más conexiones)
+    \item Recomendaciones multiobjetivo (distancia + cambios + accesibilidad)
+\end{itemize}
+
+\textbf{Arquitectura híbrida recomendada:}
+\begin{enumerate}
+    \item Usar \textbf{Neo4j} para calcular las mejores rutas desde el origen a todos los campus candidatos
+    \item Usar \textbf{MongoDB} para enriquecer los resultados con detalles de estudios, plazas y notas de corte
+    \item Combinar ambos resultados en la capa de aplicación para presentar al usuario
+\end{enumerate}
+
+% INSERTAR FIGURA
+\begin{figure}[H]
+    \centering
+    \fbox{\textit{[INSERTAR CAPTURA: comparativa\_mongodb\_vs\_neo4j.png]}}
+    \caption{Comparativa visual lado a lado: MongoDB (limitado) vs Neo4j (completo) para recomendación.}
+    \label{fig:comparativa_visual}
+\end{figure}
+
+% ============================================================================
+% 5. PRUEBAS Y EJEMPLOS DE USO
+% ============================================================================
+\section{Pruebas y Ejemplos de Uso}
+
+\subsection{Escenario 1: Estudiante desde Atocha busca Máster en IA}
+
+\subsubsection{En MongoDB}
+
+\begin{verbatim}
+>>> recomendar_campus_simplificado("Atocha", "Inteligencia Artificial", "MASTER")
+
+1. Ciudad Universitaria (UCM)
+   ⚠️  REQUIERE CAMBIO DE LÍNEA
+   💡 Usar Neo4j para calcular ruta completa
+
+2. Campus Sur (UPM)
+   ✅ ACCESIBLE en MISMA LÍNEA (L1)
+   ⏱️  TIEMPO TOTAL: 27.5 min
+\end{verbatim}
+
+\subsubsection{En Neo4j}
+
+\begin{lstlisting}[style=cypher]
+MATCH (origen:Estacion {nombre: 'Atocha'}),
+      (campus:Campus)-[:OFRECE]->(estudio:Estudio),
+      (campus)-[:CERCANA]->(destino:Estacion)
+WHERE estudio.tipo = 'MASTER' AND estudio.nombre CONTAINS 'Inteligencia Artificial'
+WITH origen, campus, destino
+MATCH path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+RETURN campus.nombre, destino.nombre, length(path) AS distancia
+ORDER BY distancia;
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+campus.nombre              destino.nombre          distancia
+------------------------------------------------------------
+Campus Sur (UPM)           Miguel Hernández        3
+Ciudad Universitaria (UCM) Ciudad Universitaria    10
+\end{verbatim}
+
+\textbf{Conclusión:} Campus Sur (UPM) es la mejor opción (misma línea, distancia corta).
+
+\subsection{Escenario 2: Análisis de hubs universitarios}
+
+\subsubsection{Consulta en Neo4j}
+
+\begin{lstlisting}[style=cypher]
+MATCH (e:Estacion)<-[:CERCANA]-(c:Campus)
+WITH e, collect(DISTINCT c.universidad) AS universidades, count(DISTINCT c) AS num_campus
+WHERE num_campus > 1
+RETURN e.nombre AS estacion,
+       num_campus,
+       universidades
+ORDER BY num_campus DESC;
+\end{lstlisting}
+
+\textbf{Resultado:}
+\begin{verbatim}
+estacion               num_campus  universidades
+------------------------------------------------
+Ciudad Universitaria   2           ["UCM", "UPM"]
+Moncloa                2           ["UCM", "UPM"]
+\end{verbatim}
+
+\textbf{Interpretación:} La zona de Moncloa-Ciudad Universitaria es un hub que concentra oferta de UCM y UPM.
+
+% ============================================================================
+% 6. PLANIFICACIÓN Y ESFUERZO DEL GRUPO
+% ============================================================================
+\section{Planificación y Esfuerzo del Grupo}
+
+\subsection{Distribución de Tareas}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}llcc@{}}
+\toprule
+\textbf{Tarea} & \textbf{Responsable} & \textbf{Horas} & \textbf{Estado} \\ \midrule
+Diseño modelo MongoDB & Miguel Alcocer & 4 & Completado \\
+Diseño modelo Neo4j & Álvaro Morán & 4 & Completado \\
+Carga datos MongoDB & Miguel Alcocer & 3 & Completado \\
+Carga datos Neo4j & Álvaro Morán & 3 & Completado \\
+Consultas MongoDB & Miguel Alcocer & 4 & Completado \\
+Consultas Neo4j & Álvaro Morán & 4 & Completado \\
+Operaciones CRUD & Álvaro Morán & 5 & Completado \\
+Parte C (Recomendación) & Miguel Alcocer & 6 & Completado \\
+Visualizaciones & Miguel Alcocer & 2 & Completado \\
+Memoria y documentación & Ambos & 8 & Completado \\ \midrule
+\textbf{Total} & & \textbf{43} & \\
+\bottomrule
+\end{tabular}
+\caption{Distribución de tareas y esfuerzo estimado}
+\label{tab:planificacion}
+\end{table}
+
+\subsection{Cronología}
+
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{Semana 1 (21-27 Dic)}: Diseño de modelos y carga inicial de datos
+    \item \textbf{Semana 2 (28 Dic-3 Ene)}: Implementación de consultas y operaciones CRUD
+    \item \textbf{Semana 3 (4-8 Ene)}: Parte C, visualizaciones y memoria
+\end{itemize}
+
+% ============================================================================
+% 7. CONCLUSIONES
+% ============================================================================
+\section{Conclusiones}
+
+\subsection{Aprendizajes Clave}
+
+\begin{enumerate}
+    \item \textbf{Modelado documental vs grafo:} Se ha comprobado empíricamente que la elección del modelo de datos debe estar guiada por los patrones de consulta dominantes. MongoDB es excelente para datos jerárquicos y consultas por atributos, mientras que Neo4j brilla en consultas de rutas y relaciones complejas.
+
+    \item \textbf{Embebido vs Referencias:} La decisión de embeber estudios en campus (MongoDB) vs modelarlos como nodos independientes (Neo4j) demuestra cómo un mismo dominio puede modelarse de formas radicalmente distintas según la tecnología.
+
+    \item \textbf{Importancia de índices:} Tanto en MongoDB como en Neo4j, los índices mejoran drásticamente el rendimiento de consultas frecuentes. La creación estratégica de índices es fundamental.
+
+    \item \textbf{Limitaciones de cada paradigma:}
+    \begin{itemize}
+        \item MongoDB no puede calcular rutas con múltiples saltos sin lógica externa compleja
+        \item Neo4j requiere más trabajo para consultas de agregación sobre atributos (comparado con pipelines de MongoDB)
+    \end{itemize}
+
+    \item \textbf{Complementariedad:} En un sistema real de producción, la arquitectura ideal combinaría ambas tecnologías:
+    \begin{itemize}
+        \item Neo4j como "motor de rutas" (cálculo de trayectos óptimos)
+        \item MongoDB como "repositorio de datos" (información detallada de campus, estudios, horarios, etc.)
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Casos de Uso Reales}
+
+Este proyecto demuestra aplicabilidad directa en:
+
+\begin{itemize}
+    \item \textbf{Planificadores de viaje:} Apps como Google Maps combinan grafos (rutas) con bases de datos documentales (detalles de lugares)
+    \item \textbf{Sistemas de recomendación educativa:} Plataformas como \textit{Universia} o \textit{Educaweb} que ayudan a elegir universidad considerando múltiples criterios
+    \item \textbf{Análisis de movilidad urbana:} Estudios de planificación que identifican zonas mal conectadas o saturadas
+\end{itemize}
+
+\subsection{Posibles Extensiones}
+
+Funcionalidades que podrían implementarse en el futuro:
+
+\begin{enumerate}
+    \item \textbf{Índices geoespaciales en MongoDB:} Usar \texttt{2dsphere} para consultas tipo "campus a menos de 2km de una coordenada"
+
+    \item \textbf{Algoritmos de centralidad en Neo4j:} Usar \texttt{PageRank} o \texttt{Betweenness Centrality} para identificar estaciones clave
+
+    \item \textbf{Integración con datos reales:} Consumir API de Metro de Madrid para actualizar tiempos de viaje en tiempo real
+
+    \item \textbf{Interfaz web:} Crear un frontend React que consuma endpoints que combinan MongoDB y Neo4j
+
+    \item \textbf{Criterios adicionales:} Considerar precio del billete según zonas, accesibilidad (ascensores), horarios nocturnos
+\end{enumerate}
+
+% ============================================================================
+% APÉNDICE - CÓDIGO FUENTE
+% ============================================================================
+\section*{Apéndice A: Código Fuente Principal}
+\addcontentsline{toc}{section}{Apéndice A: Código Fuente Principal}
+
+\subsection*{A.1 Carga de datos en MongoDB}
+
+\begin{lstlisting}[style=python, caption={Fragmento de load\_data.py (MongoDB)}]
+def load_lineas(self, lineas_data: List[Dict]) -> Dict[int, ObjectId]:
+    """Carga las líneas de metro en MongoDB"""
+    lineas_collection = self.db.lineas
+    linea_id_map = {}
+
+    for linea in lineas_data:
+        result = lineas_collection.insert_one(linea)
+        linea_id_map[linea["numero"]] = result.inserted_id
+
+    return linea_id_map
+
+def _update_lineas_with_estaciones(self, linea_id_map, estacion_id_map, estaciones_data):
+    """Actualiza las líneas con sus estaciones ordenadas"""
+    lineas_collection = self.db.lineas
+
+    # Agrupar estaciones por línea
+    lineas_estaciones = {}
+    for estacion_orig in estaciones_data:
+        original_id = f"est_l{estacion_orig['lineas'][0]}_{...}"
+
+        for linea_num in estacion_orig["lineas"]:
+            if linea_num not in lineas_estaciones:
+                lineas_estaciones[linea_num] = []
+
+            orden = estacion_orig["indice_por_linea"].get(str(linea_num), 0)
+            lineas_estaciones[linea_num].append({
+                "estacion_id": estacion_id_map.get(original_id),
+                "orden": orden
+            })
+
+    # Actualizar cada línea con sus estaciones ordenadas
+    for linea_num, estaciones in lineas_estaciones.items():
+        estaciones_ordenadas = sorted(estaciones, key=lambda x: x["orden"])
+        estaciones_ids = [est["estacion_id"] for est in estaciones_ordenadas]
+
+        lineas_collection.update_one(
+            {"_id": linea_id_map[linea_num]},
+            {"$set": {"estaciones_ids": estaciones_ids}}
+        )
+\end{lstlisting}
+
+\subsection*{A.2 Carga de datos en Neo4j}
+
+\begin{lstlisting}[style=cypher, caption={Fragmento de load\_data.py (Neo4j) - Creación de relaciones SIGUIENTE}]
+# Preparar relaciones SIGUIENTE entre estaciones consecutivas
+relaciones_siguiente = []
+for linea_num, estaciones in estaciones_por_linea.items():
+    estaciones_ordenadas = sorted(estaciones, key=lambda x: x["orden"])
+
+    for i in range(len(estaciones_ordenadas) - 1):
+        est_actual = estaciones_ordenadas[i]
+        est_siguiente = estaciones_ordenadas[i + 1]
+
+        tiempo_viaje = 2 + (i % 2)  # Alterna entre 2 y 3 minutos
+
+        relaciones_siguiente.append({
+            "desde": est_actual["id"],
+            "hasta": est_siguiente["id"],
+            "linea_id": linea_num,
+            "tiempo_viaje": tiempo_viaje
+        })
+
+# Ejecutar creación masiva con UNWIND
+query = """
+UNWIND $relaciones AS rel
+MATCH (e1:Estacion {id: rel.desde})
+MATCH (e2:Estacion {id: rel.hasta})
+CREATE (e1)-[:SIGUIENTE {lineaId: rel.linea_id, tiempo_viaje: rel.tiempo_viaje}]->(e2)
+"""
+session.run(query, relaciones=relaciones_siguiente)
+\end{lstlisting}
+
+\subsection*{A.3 Consulta de recomendación en Neo4j (Parte C)}
+
+\begin{lstlisting}[style=cypher, caption={Consulta completa de recomendación multiobjetivo}]
+-- F1. Recomendación completa con cambios de línea
+MATCH (origen:Estacion {nombre: 'Sol'}),
+      (campus:Campus)-[:OFRECE]->(estudio:Estudio),
+      (campus)-[:CERCANA]->(destino:Estacion)
+WHERE estudio.tipo = 'GRADO' AND
+      estudio.nombre CONTAINS 'Ciencia e Ingeniería de Datos'
+WITH origen, campus, estudio, destino
+MATCH path = shortestPath((origen)-[:SIGUIENTE*]-(destino))
+WITH campus, estudio, destino, path,
+     [r IN relationships(path) | r.lineaId] AS lineas_ruta
+UNWIND range(0, size(lineas_ruta) - 2) AS i
+WITH campus, estudio, destino, path, lineas_ruta,
+     CASE WHEN lineas_ruta[i] <> lineas_ruta[i+1] THEN 1 ELSE 0 END AS cambio
+RETURN campus.universidad AS universidad,
+       campus.nombre AS campus,
+       estudio.plazas AS plazas,
+       estudio.nota_corte AS nota_corte,
+       destino.nombre AS estacion_destino,
+       length(path) AS num_estaciones,
+       sum(cambio) AS num_cambios_linea,
+       [n IN nodes(path) | n.nombre] AS ruta
+ORDER BY num_cambios_linea, num_estaciones;
+\end{lstlisting}
+
+% ============================================================================
+% REFERENCIAS
+% ============================================================================
+\begin{thebibliography}{9}
+
+\bibitem{mongodb_docs}
+MongoDB Documentation,
+\textit{MongoDB Manual},
+\url{https://docs.mongodb.com/},
+2025.
+
+\bibitem{neo4j_docs}
+Neo4j, Inc.,
+\textit{Neo4j Documentation},
+\url{https://neo4j.com/docs/},
+2025.
+
+\bibitem{metro_madrid}
+Metro de Madrid,
+\textit{Plano oficial del Metro de Madrid},
+\url{https://www.metromadrid.es/es/viaja-en-metro/plano-de-metro-de-madrid},
+2025.
+
+\bibitem{cypher_manual}
+Neo4j, Inc.,
+\textit{Cypher Query Language Reference},
+\url{https://neo4j.com/docs/cypher-manual/current/},
+2025.
+
+\bibitem{aggregation_pipeline}
+MongoDB, Inc.,
+\textit{Aggregation Pipeline},
+\url{https://docs.mongodb.com/manual/core/aggregation-pipeline/},
+2025.
+
+\end{thebibliography}
+
+\end{document}
