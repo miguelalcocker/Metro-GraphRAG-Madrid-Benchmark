@@ -21,7 +21,8 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
-
+\usepackage{graphicx}
+\usepackage{float}
 % ============================================================================
 % CONFIGURACIÓN DE LISTINGS (para código)
 % ============================================================================
@@ -427,34 +428,34 @@ El script \texttt{load\_data.py} implementa una coreografía en 4 pasos para gar
 ✓ Archivo cargado: estaciones.json (60 registros)
 ✓ Archivo cargado: campus.json (6 registros)
 
-📊 Cargando líneas de metro...
+�� Cargando líneas de metro...
   • Línea 1: Línea 1 - Pinar de Chamartín ↔ Valdecarros
   • Línea 3: Línea 3 - Moncloa ↔ Villaverde Alto
   • Línea 6: Línea 6 - Circular
   • Línea 10: Línea 10 - Hospital Infanta Sofía ↔ Puerta del Sur
 ✓ 4 líneas insertadas
 
-🚇 Cargando estaciones de metro...
+�� Cargando estaciones de metro...
   • Pinar de Chamartín (L1)
   • Bambú (L1)
   • Chamartín (L1, L10) [RENFE]
   • ... (57 más)
 ✓ 60 estaciones insertadas
 
-🔗 Actualizando referencias línea-estación...
+�� Actualizando referencias línea-estación...
   • Línea 1: 18 estaciones vinculadas
   • Línea 3: 16 estaciones vinculadas
   • Línea 6: 18 estaciones vinculadas
   • Línea 10: 15 estaciones vinculadas
 
-🎓 Cargando campus universitarios...
+�� Cargando campus universitarios...
   • Ciudad Universitaria (UCM)
     - 4 Grados, 3 Másteres
     - Estaciones cercanas: 2
   • ... (5 más)
 ✓ 6 campus insertados
 
-📈 Estadísticas de la base de datos:
+�� Estadísticas de la base de datos:
   • Líneas: 4
   • Estaciones: 60
   • Campus: 6
@@ -640,7 +641,7 @@ def eliminar_estudio_de_campus(self, nombre_campus, universidad,
     )
 
     if result.modified_count > 0:
-        print(f"🗑️ Estudio eliminado: {nombre_estudio}")
+        print(f"��️ Estudio eliminado: {nombre_estudio}")
         return True
     return False
 \end{lstlisting}
@@ -1071,7 +1072,7 @@ El modelo de grafo implementado en Neo4j consta de 4 tipos de nodos:
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_01\_grafo\_general.png]}}
+    \includegraphics[width=0.8\textwidth]{neo4j_01_grafo_general.png}
     \caption{Vista general del grafo en Neo4j Browser mostrando los cuatro tipos de nodos y sus relaciones.}
     \label{fig:neo4j_grafo}
 \end{figure}
@@ -1157,7 +1158,7 @@ CREATE (c)-[:OFRECE]->(e)
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_02\_esquema\_modelo.png]}}
+    \includegraphics[width=0.8\textwidth]{neo4j_02_esquema_modelo.png}
     \caption{Diagrama del esquema del grafo mostrando los 4 tipos de nodos y las 5 relaciones.}
     \label{fig:neo4j_esquema}
 \end{figure}
@@ -1280,7 +1281,7 @@ CREATE (c)-[:OFRECE]->(e)
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_03\_estadisticas\_carga.png]}}
+    \includegraphics[width=0.5\textwidth]{neo4j_03_estadisticas_carga.png}
     \caption{Salida de consola del script de carga mostrando estadísticas del grafo.}
     \label{fig:neo4j_stats}
 \end{figure}
@@ -1300,7 +1301,9 @@ ORDER BY t.orden;
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_04\_consulta\_estaciones\_linea.png]}}
+    % El ancho 1.15 hace que la imagen sea más grande que el texto,
+    % y \makebox se encarga de que quede centrada en la página.
+    \makebox[\textwidth][c]{\includegraphics[width=1.15\textwidth]{neo4j_04_consulta_estaciones_linea.png}}
     \caption{Resultado de la consulta A1 mostrando las 18 estaciones de la Línea 1 en orden.}
     \label{fig:neo4j_consulta_a1}
 \end{figure}
@@ -1330,7 +1333,7 @@ Moncloa                         2
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_05\_hubs\_universitarios.png]}}
+    \includegraphics[width=0.9\linewidth]{neo4j_05.png}
     \caption{Resultado de la consulta A2: estaciones que sirven a múltiples campus.}
     \label{fig:neo4j_consulta_a2}
 \end{figure}
@@ -1365,7 +1368,8 @@ ORDER BY c.universidad;
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_06\_campus\_gcid.png]}}
+    % width=\textwidth hace que la imagen ocupe el 100% del ancho del texto
+    \includegraphics[width=\textwidth]{neo4j_06_campus_gcid.png}
     \caption{Resultado de la consulta B1: campus que ofrecen el Grado en Ciencia e Ingeniería de Datos.}
     \label{fig:neo4j_consulta_b1}
 \end{figure}
@@ -1419,7 +1423,7 @@ num_estaciones: 8
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_07\_ruta\_corta\_sol\_cu.png]}}
+    \includegraphics[width=\textwidth]{neo4j_07_ruta_corta_sol_cu.png}
     \caption{Visualización del camino más corto entre Sol y Ciudad Universitaria.}
     \label{fig:neo4j_consulta_c1}
 \end{figure}
@@ -1506,7 +1510,7 @@ num_cambios_linea: 1  (cambio en Tribunal: L1 → L10 → L3)
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_08\_ruta\_con\_cambios.png]}}
+    \includegraphics[width=\textwidth]{neo4j_08_ruta_con_cambios.png}
     \caption{Resultado de la consulta D1 mostrando ruta con cálculo de cambios de línea.}
     \label{fig:neo4j_consulta_d1}
 \end{figure}
@@ -1679,7 +1683,7 @@ def recomendar_campus_simplificado(self, nombre_estacion_origen,
             print(f"   ⏱️  TIEMPO TOTAL: {ruta['tiempo_total_estimado']:.1f} min")
         else:
             print(f"   ⚠️  REQUIERE CAMBIO DE LÍNEA")
-            print(f"   💡 Usar Neo4j para calcular ruta completa")
+            print(f"   �� Usar Neo4j para calcular ruta completa")
 
     return resultados
 \end{lstlisting}
@@ -1695,11 +1699,11 @@ def recomendar_campus_simplificado(self, nombre_estacion_origen,
 
 2. Campus de Leganés (UC3M)
    ⚠️  REQUIERE CAMBIO DE LÍNEA
-   💡 Usar Neo4j para calcular ruta completa
+   �� Usar Neo4j para calcular ruta completa
 
 3. Campus de Fuenlabrada (URJC)
    ⚠️  REQUIERE CAMBIO DE LÍNEA
-   💡 Usar Neo4j para calcular ruta completa
+   �� Usar Neo4j para calcular ruta completa
 \end{verbatim}
 
 % INSERTAR FIGURA
@@ -1762,7 +1766,8 @@ URJC & Campus de Fuenlabrada & 65 & 12.2 & 18 & 2 \\ \bottomrule
 % INSERTAR FIGURA
 \begin{figure}[H]
     \centering
-    \fbox{\textit{[INSERTAR CAPTURA: neo4j\_09\_recomendacion\_completa.png]}}
+    % Ajustado a 1.15 del ancho del texto para que sea "extra grande"
+    \makebox[\textwidth][c]{\includegraphics[width=1.15\textwidth]{neo4j_09_recomendacion_completa.png}}
     \caption{Resultado de la consulta de recomendación completa en Neo4j, ordenada por número de cambios y distancia.}
     \label{fig:neo4j_recomendacion}
 \end{figure}
@@ -1849,7 +1854,7 @@ Recomendaciones basadas en topología y rutas óptimas. \\ \bottomrule
 
 1. Ciudad Universitaria (UCM)
    ⚠️  REQUIERE CAMBIO DE LÍNEA
-   💡 Usar Neo4j para calcular ruta completa
+   �� Usar Neo4j para calcular ruta completa
 
 2. Campus Sur (UPM)
    ✅ ACCESIBLE en MISMA LÍNEA (L1)
